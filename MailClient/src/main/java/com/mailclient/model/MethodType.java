@@ -1,4 +1,4 @@
-package com.example.mailclient.model;
+package com.mailclient.model;
 
 public enum MethodType {
     SEND_EMAIL,

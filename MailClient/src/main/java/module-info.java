@@ -3,6 +3,6 @@ module com.example.mailclient {
     requires javafx.fxml;
 
 
-    opens com.example.mailclient to javafx.fxml;
-    exports com.example.mailclient;
+    opens com.mailclient to javafx.fxml;
+    exports com.mailclient;
 }
