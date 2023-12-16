@@ -1,4 +1,4 @@
-package com.example.mailclient;
+package com.mailclient;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;

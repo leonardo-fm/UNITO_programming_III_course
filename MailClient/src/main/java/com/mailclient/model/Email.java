@@ -1,4 +1,4 @@
-package com.example.mailclient.model;
+package com.mailclient.model;
 
 import java.util.Date;
 import java.util.List;
