@@ -1,4 +1,4 @@
-package com.example.mailserver;
+package com.mailserver;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;

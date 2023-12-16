@@ -1,4 +1,4 @@
-package com.example.mailserver.model;
+package com.mailserver.model;
 
 import java.lang.reflect.Type;
 
