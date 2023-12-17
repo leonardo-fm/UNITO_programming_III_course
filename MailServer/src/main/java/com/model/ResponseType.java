@@ -1,4 +1,4 @@
-package com.mailclient.model;
+package com.model;
 
 public enum ResponseType {
     OK,

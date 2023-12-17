@@ -1,8 +1,9 @@
-package com.mailclient.model;
+package com.model;
 
+import java.io.Serializable;
 import java.lang.reflect.Type;
 
-public class ServerResponse {
+public class ServerResponse implements Serializable {
     private ResponseType responseType;
     private String responseDescription;
     private Object payload;

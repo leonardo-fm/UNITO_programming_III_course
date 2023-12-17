@@ -8,8 +8,12 @@ import javafx.stage.Stage;
 import java.io.IOException;
 
 public class HelloApplication extends Application {
+    private Thread serverThread;
     @Override
     public void start(Stage stage) throws IOException {
+        serverThread = new Thread(new ServerActivity());
+        serverThread.setDaemon(true);
+        serverThread.start();
         FXMLLoader fxmlLoader = new FXMLLoader(HelloApplication.class.getResource("hello-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load(), 320, 240);
         stage.setTitle("Hello!");
@@ -17,6 +21,10 @@ public class HelloApplication extends Application {
         stage.show();
     }
 
+    @Override
+    public void stop(){
+        serverThread.interrupt();
+    }
     public static void main(String[] args) {
         launch();
     }

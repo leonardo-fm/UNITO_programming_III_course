@@ -1,10 +1,11 @@
-package com.mailserver.model;
+package com.model;
 
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-public class Email {
+public class Email implements Serializable {
     private UUID id;
     private String sender;
     private List<String> receivers;

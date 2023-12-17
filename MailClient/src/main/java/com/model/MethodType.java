@@ -1,4 +1,4 @@
-package com.mailserver.model;
+package com.model;
 
 public enum MethodType {
     SEND_EMAIL,
