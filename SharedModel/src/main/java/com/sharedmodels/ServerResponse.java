@@ -7,7 +7,6 @@ public class ServerResponse implements Serializable {
     private ResponseType responseType;
     private String responseDescription;
     private Object payload;
-    private Class<?> payloadType;
 
     public ResponseType getResponseType() {
         return responseType;
@@ -31,13 +30,5 @@ public class ServerResponse implements Serializable {
 
     public void setPayload(Object payload) {
         this.payload = payload;
-    }
-
-    public Class<?> getPayloadType() {
-        return payloadType;
-    }
-
-    public void setPayloadType(Class<?> payloadType) {
-        this.payloadType = payloadType;
     }
 }
