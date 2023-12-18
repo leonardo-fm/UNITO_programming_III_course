@@ -1,9 +1,8 @@
 package com.mailserver;
 
+import com.sharedmodels.*;
+
 import com.mailserver.model.ServerModel;
-import com.model.Email;
-import com.model.ServerRequest;
-import com.model.ServerResponse;
 
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;

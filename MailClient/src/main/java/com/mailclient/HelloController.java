@@ -1,8 +1,7 @@
 package com.mailclient;
 
-import com.model.Email;
-import com.model.ServerRequest;
-import com.model.ServerResponse;
+import com.sharedmodels.*;
+
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 
@@ -13,7 +12,7 @@ import java.net.Socket;
 import java.util.Date;
 import java.util.UUID;
 
-import static com.model.MethodType.SEND_EMAIL;
+import static com.sharedmodels.MethodType.SEND_EMAIL;
 
 public class HelloController {
     @FXML

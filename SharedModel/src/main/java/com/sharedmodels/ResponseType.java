@@ -1,4 +1,4 @@
-package com.model;
+package com.sharedmodels;
 
 public enum ResponseType {
     OK,

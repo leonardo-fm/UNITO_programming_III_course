@@ -1,4 +1,4 @@
-package com.model;
+package com.sharedmodels;
 
 import java.io.Serializable;
 import java.util.Date;
