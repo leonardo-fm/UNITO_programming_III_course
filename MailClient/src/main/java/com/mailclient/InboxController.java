@@ -6,6 +6,7 @@ import com.sharedmodels.ServerResponse;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -16,16 +17,26 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.net.URL;
 import java.util.Date;
+import java.util.ResourceBundle;
 import java.util.UUID;
 
 import static com.sharedmodels.MethodType.SEND_EMAIL;
 
-public class InboxController {
+public class InboxController implements Initializable {
 
     private Stage stage;
     private Scene scene;
     private Parent root;
+
+    @FXML
+    private Label username;
+
+    @Override
+    public void initialize(URL location, ResourceBundle resourceBundle) {
+        username.setText(SessionData.getInstance().getUserLogged());
+    }
 
     public void onWriteBtnClick(ActionEvent event) throws IOException {
         root = FXMLLoader.load(getClass().getResource("writeEmail-view.fxml"));

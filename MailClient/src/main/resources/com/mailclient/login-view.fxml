@@ -11,8 +11,9 @@
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
     </padding>
    <children>
-      <Label text="Username" />
-      <TextField promptText="mario.rossi@example.com" />
-      <Button mnemonicParsing="false" onAction="#onLoginBtnClick" text="Login" />
+       <Label fx:id="errorLabel" text="Error string here" disable="true" />
+       <Label fx:id="usernameLabel" text="Username" />
+       <TextField fx:id="usernameTextField" text="example@edu.it" promptText="mario.rossi@example.com" />
+       <Button fx:id="loginBtn" mnemonicParsing="false" onAction="#onLoginBtnClick" text="Login" />
    </children>
 </VBox>
