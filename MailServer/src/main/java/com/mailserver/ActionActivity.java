@@ -1,5 +1,6 @@
 package com.mailserver;
 
+import com.mailserver.model.ServerModel;
 import com.model.Email;
 import com.model.ServerRequest;
 import com.model.ServerResponse;
@@ -11,8 +12,10 @@ import java.net.Socket;
 public class ActionActivity implements Runnable {
 
     private final Socket socket;
-    public ActionActivity(Socket socket) {
+    private final ServerModel serverModel;
+    public ActionActivity(Socket socket, ServerModel serverModel) {
         this.socket = socket;
+        this.serverModel = serverModel;
     }
 
     @Override
@@ -35,6 +38,7 @@ public class ActionActivity implements Runnable {
 
     private void sendEmail(ServerRequest req, ServerResponse res){
         Email e = (Email) req.getPayload();
+        this.serverModel.addLog("Received request: SEND EMAIL from " + this.socket.getInetAddress());
         System.out.println("SEND EMAIL");
         System.out.println("Email id: " + e.getId());
         System.out.println("Date: " + e.getMailDate());

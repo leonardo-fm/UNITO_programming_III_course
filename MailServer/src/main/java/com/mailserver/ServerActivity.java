@@ -1,5 +1,8 @@
 package com.mailserver;
 
+import com.mailserver.model.ServerModel;
+import javafx.beans.Observable;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -7,14 +10,22 @@ import java.net.Socket;
 public class ServerActivity implements Runnable {
     private ServerSocket serverSocket;
     private Socket incoming;
+    private ServerModel serverModel;
+
+    public ServerActivity(ServerModel serverModel) {
+        this.serverModel = serverModel;
+    }
+
     @Override
     public void run() {
         try {
-            serverSocket = new ServerSocket(8189);
+            int port = 8189;
+            serverSocket = new ServerSocket(port);
+            serverModel.addLog("Server hosted in port " + port);
             while (true) {
                 incoming = serverSocket.accept();
                 try {
-                    Thread t = new Thread(new ActionActivity(incoming));
+                    Thread t = new Thread(new ActionActivity(incoming, this.serverModel));
                     t.setDaemon(true);
                     t.start();
                     t.join();
