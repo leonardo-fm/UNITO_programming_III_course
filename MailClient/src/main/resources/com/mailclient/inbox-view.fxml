@@ -7,12 +7,12 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox alignment="CENTER" prefHeight="500.0" prefWidth="400.0" spacing="20.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mailclient.InboxController">
+<VBox alignment="CENTER" prefHeight="500.0" prefWidth="400.0" spacing="20.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mailclient.InboxController">
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
     </padding>
    <children>
-      <Button mnemonicParsing="false" text="Logout" />
+      <Button mnemonicParsing="false" onAction="#onLogoutBtnClick" text="Logout" />
       <ScrollPane prefHeight="347.0" prefWidth="360.0">
          <content>
             <VBox alignment="CENTER" prefHeight="354.0" prefWidth="368.0">
@@ -20,7 +20,7 @@
                   <HBox prefHeight="67.0" prefWidth="368.0">
                      <children>
                         <Label text="This is an email" />
-                        <Button mnemonicParsing="false" text="&gt;" />
+                        <Button mnemonicParsing="false" onAction="#onReadBtnClick" text="&gt;" />
                         <Button mnemonicParsing="false" text="Delete" />
                      </children>
                   </HBox>
@@ -28,6 +28,6 @@
             </VBox>
          </content>
       </ScrollPane>
-      <Button mnemonicParsing="false" text="Write" />
+      <Button mnemonicParsing="false" onAction="#onWriteBtnClick" text="Write" />
    </children>
 </VBox>

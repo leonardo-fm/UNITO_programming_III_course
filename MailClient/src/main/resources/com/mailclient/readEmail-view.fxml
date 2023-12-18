@@ -5,13 +5,13 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.Pane?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mailclient.ReadEmailController">
    <children>
       <TextArea layoutX="18.0" layoutY="117.0" prefHeight="257.0" prefWidth="364.0" />
       <TextField layoutX="81.0" layoutY="75.0" prefHeight="25.0" prefWidth="238.0" />
-      <Button layoutX="29.0" layoutY="21.0" mnemonicParsing="false" text="Cancel" />
-      <Button layoutX="37.0" layoutY="391.0" mnemonicParsing="false" text="Forward" />
-      <Button layoutX="148.0" layoutY="391.0" mnemonicParsing="false" text="Reply" />
-      <Button layoutX="285.0" layoutY="391.0" mnemonicParsing="false" text="Reply all" />
+      <Button layoutX="29.0" layoutY="21.0" mnemonicParsing="false" onAction="#onCancelBtnClick" text="Cancel" />
+      <Button layoutX="37.0" layoutY="391.0" mnemonicParsing="false" onAction="#onForwardBtnClick" text="Forward" />
+      <Button layoutX="148.0" layoutY="391.0" mnemonicParsing="false" onAction="#onReplyBtnClick" text="Reply" />
+      <Button layoutX="285.0" layoutY="391.0" mnemonicParsing="false" onAction="#onReplyAllBtnClick" text="Reply all" />
    </children>
 </Pane>
