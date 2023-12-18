@@ -16,17 +16,7 @@
       <Button fx:id="logoutBtn" mnemonicParsing="false" onAction="#onLogoutBtnClick" text="Logout" />
       <ScrollPane prefHeight="347.0" prefWidth="360.0">
          <content>
-            <VBox alignment="CENTER" prefHeight="354.0" prefWidth="368.0">
-               <children>
-                  <HBox prefHeight="67.0" prefWidth="368.0">
-                     <children>
-                        <Label text="This is an email" />
-                        <Button fx:id="openBtn" mnemonicParsing="false" onAction="#onReadBtnClick" text="&gt;" />
-                        <Button fx:id="deleteBtn" mnemonicParsing="false" text="Delete" />
-                     </children>
-                  </HBox>
-               </children>
-            </VBox>
+            <VBox fx:id="inboxHolder" alignment="CENTER" prefHeight="354.0" prefWidth="368.0" />
          </content>
       </ScrollPane>
       <Button fx:id="writeBtn" mnemonicParsing="false" onAction="#onWriteBtnClick" text="Write" />

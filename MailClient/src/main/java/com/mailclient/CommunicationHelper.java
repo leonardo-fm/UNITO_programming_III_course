@@ -8,8 +8,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.*;
 
-import static com.sharedmodels.MethodType.SEND_EMAIL;
+import static com.sharedmodels.MethodType.*;
 
 public class CommunicationHelper {
 
@@ -31,9 +32,23 @@ public class CommunicationHelper {
 
             ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
             return (ServerResponse) inputStream.readObject();
-        } catch (IOException e) {
+        } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);
-        } catch (ClassNotFoundException e) {
+        }
+    }
+
+    public List<Email> GetInboxEmails() {
+        try {
+            ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
+            ServerRequest req = new ServerRequest(GET_ALL_EMAILS);
+            outputStream.writeObject(req);
+
+            ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
+            ServerResponse serverResponse = (ServerResponse) inputStream.readObject();
+
+            // Is not good :\
+            return (List<Email>) serverResponse.getPayload();
+        } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
     }
