@@ -6,7 +6,6 @@ import java.lang.reflect.Type;
 public class ServerRequest implements Serializable {
     private MethodType methodType;
     private Object payload;
-    private Type payloadType;
 
     public ServerRequest() { }
     public ServerRequest(MethodType methodType) {
@@ -15,7 +14,6 @@ public class ServerRequest implements Serializable {
     public ServerRequest(MethodType methodType, Object payload, Type payloadType) {
         this.methodType = methodType;
         this.payload = payload;
-        this.payloadType = payloadType;
     }
 
     public MethodType getMethodType() {
@@ -32,13 +30,5 @@ public class ServerRequest implements Serializable {
 
     public void setPayload(Object payload) {
         this.payload = payload;
-    }
-
-    public Type getPayloadType() {
-        return payloadType;
-    }
-
-    public void setPayloadType(Type payloadType) {
-        this.payloadType = payloadType;
     }
 }
