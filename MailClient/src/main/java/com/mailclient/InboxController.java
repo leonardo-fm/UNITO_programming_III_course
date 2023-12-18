@@ -12,6 +12,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -48,15 +49,22 @@ public class InboxController implements Initializable {
 
         List<Email> inboxEmails = new CommunicationHelperMock().GetInboxEmailsMock();
         for (int i = 0; i < inboxEmails.size(); i++) {
+            final int index = i;
+
             HBox hBox = new HBox();
             hBox.setAlignment(Pos.CENTER_LEFT);
             hBox.setPadding(new Insets(5, 5, 5, 5));
 
             Text from = new Text(inboxEmails.get(i).getSender() + "\t");
             Text emailText = new Text(inboxEmails.get(i).getMainContent());
+            Button button = new Button("Read");
+            button.setOnMouseClicked(e -> {
+                System.out.println("F! " + inboxEmails.get(index).getId());
+            });
 
             hBox.getChildren().add(from);
             hBox.getChildren().add(emailText);
+            hBox.getChildren().add(button);
             inboxHolder.getChildren().add(hBox);
         }
     }
