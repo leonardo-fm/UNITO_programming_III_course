@@ -12,10 +12,11 @@
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
     </padding>
    <children>
-      <Button mnemonicParsing="false" onAction="#onCancelBtnClick" text="Cancel" />
+      <Label fx:id="errorLabel" text="error display" />
+      <Button fx:id="cancelBtn" mnemonicParsing="false" onAction="#onCancelBtnClick" text="Cancel" />
       <Label text="To" />
-      <TextField />
-      <TextArea prefHeight="200.0" prefWidth="200.0" />
-      <Button mnemonicParsing="false" onAction="#onSendBtnClick" text="Send" />
+      <TextField fx:id="toTextField" text="test@gmail.com" promptText="example@edu.it, asdf@edu.it, ..." />
+      <TextArea fx:id="emailTextArea" text="Default email, HI! :D" prefHeight="200.0" prefWidth="200.0" />
+      <Button fx:id="sendBtn" mnemonicParsing="false" onAction="#onSendBtnClick" text="Send" />
    </children>
 </VBox>
