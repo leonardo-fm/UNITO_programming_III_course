@@ -13,6 +13,17 @@ public class Email implements Serializable {
     private String mainContent;
     private Date mailDate;
 
+    public Email() { }
+
+    public Email(String sender, List<String> receivers, String mainContent) {
+        this.id = UUID.randomUUID();
+        this.mailDate = new Date();
+
+        this.sender = sender;
+        this.receivers = receivers;
+        this.mainContent = mainContent;
+    }
+
     public UUID getId() {
         return id;
     }
