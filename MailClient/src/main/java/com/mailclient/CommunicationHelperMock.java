@@ -22,6 +22,12 @@ public class CommunicationHelperMock {
         data.add(new Email("kjhgfdreuhfg@gmail.com", to, "emsdds ds ds ailObject", "Some are not to know more about them, I.E: to know which fits better your needs."));
         data.add(new Email("abc@gmail.com", to, "emailOsdsd bject", "Some of those can be  more about them, I.E: to know  better your needs."));
         data.add(new Email("jfsdhgkfd@gmail.com", to, "emailObject", "Some of those can be instantiated (the ones that are not defined as abstract class). Use their links to know more about them, I.E: to know which fits better your needs."));
+        data.add(new Email("jfsdhgkfd@gmail.com", to, "emailObject", "Some of those can be instantiated (the ones that are not defined as abstract class). Use their links to know more about them, I.E: to know which fits better your needs."));
+        data.add(new Email("jfsdhgkfd@gmail.com", to, "emailObject", "Some of those can be instantiated (the ones that are not defined as abstract class). Use their links to know more about them, I.E: to know which fits better your needs."));
+        data.add(new Email("jfsdhgkfd@gmail.com", to, "emailObject", "Some of those can be instantiated (the ones that are not defined as abstract class). Use their links to know more about them, I.E: to know which fits better your needs."));
+        data.add(new Email("jfsdhgkfd@gmail.com", to, "emailObject", "Some of those can be instantiated (the ones that are not defined as abstract class). Use their links to know more about them, I.E: to know which fits better your needs."));
+        data.add(new Email("jfsdhgkfd@gmail.com", to, "emailObject", "Some of those can be instantiated (the ones that are not defined as abstract class). Use their links to know more about them, I.E: to know which fits better your needs."));
+        data.add(new Email("jfsdhgkfd@gmail.com", to, "emailObject", "Some of those can be instantiated (the ones that are not defined as abstract class). Use their links to know more about them, I.E: to know which fits better your needs."));
 
         return  data;
     }

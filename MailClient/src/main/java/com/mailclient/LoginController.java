@@ -26,10 +26,8 @@ public class LoginController implements Initializable {
 
     @FXML
     private TextField usernameTextField;
-
     @FXML
     private Label errorLabel;
-
     @FXML
     private Pane loginPane;
 
