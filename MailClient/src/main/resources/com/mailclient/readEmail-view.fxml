@@ -10,6 +10,7 @@
    <children>
       <TextArea fx:id="emailTextArea" layoutX="18.0" layoutY="117.0" prefHeight="257.0" prefWidth="364.0" />
       <Button layoutX="29.0" layoutY="21.0" mnemonicParsing="false" onAction="#onCancelBtnClick" text="Cancel" />
+      <Button layoutX="315.0" layoutY="28.0" mnemonicParsing="false" onAction="#onDeleteBtnClick" text="Delete" />
       <Button layoutX="37.0" layoutY="391.0" mnemonicParsing="false" onAction="#onForwardBtnClick" text="Forward" />
       <Button layoutX="148.0" layoutY="391.0" mnemonicParsing="false" onAction="#onReplyBtnClick" text="Reply" />
       <Button layoutX="285.0" layoutY="391.0" mnemonicParsing="false" onAction="#onReplyAllBtnClick" text="Reply all" />

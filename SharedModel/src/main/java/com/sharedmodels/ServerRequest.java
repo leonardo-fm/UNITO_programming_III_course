@@ -11,7 +11,7 @@ public class ServerRequest implements Serializable {
     public ServerRequest(MethodType methodType) {
         this.methodType = methodType;
     }
-    public ServerRequest(MethodType methodType, Object payload, Type payloadType) {
+    public ServerRequest(MethodType methodType, Object payload) {
         this.methodType = methodType;
         this.payload = payload;
     }

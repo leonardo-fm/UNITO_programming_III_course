@@ -27,7 +27,7 @@ public class CommunicationHelper {
     public ServerResponse SendEmail(Email email) {
         try {
             ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
-            ServerRequest req = new ServerRequest(SEND_EMAIL, email, Email.class);
+            ServerRequest req = new ServerRequest(SEND_EMAIL, email);
             outputStream.writeObject(req);
 
             ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
@@ -48,6 +48,19 @@ public class CommunicationHelper {
 
             // Is not good :\
             return (List<Email>) serverResponse.getPayload();
+        } catch (IOException | ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public ServerResponse DeleteEmail(UUID emailUUID) {
+        try {
+            ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
+            ServerRequest req = new ServerRequest(DELETE_EMAIL, emailUUID);
+            outputStream.writeObject(req);
+
+            ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
+            return (ServerResponse) inputStream.readObject();
         } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }

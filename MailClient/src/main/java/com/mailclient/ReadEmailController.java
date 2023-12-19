@@ -53,6 +53,17 @@ public class ReadEmailController {
         stage.show();
     }
 
+    public void onDeleteBtnClick(ActionEvent event) throws IOException {
+
+        ServerResponse serverResponse = new CommunicationHelper().DeleteEmail(currentOpenedEmail.getId());
+
+        root = FXMLLoader.load(getClass().getResource("inbox-view.fxml"));
+        stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
+    }
+
 
     public void onForwardBtnClick(ActionEvent event) {
 
