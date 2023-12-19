@@ -49,8 +49,8 @@ public class ReadEmailController implements Initializable {
 
     public void Setup(Email email) {
         dateText.setText("Sent date: " + email.getMailDate().toString());
-        fromText.setText("Sender: " + email.getSender());
-        toText.setText("Receivers: " + String.join(", ", email.getReceivers()));
+        fromText.setText("From: " + email.getSender());
+        toText.setText("To: " + String.join(", ", email.getReceivers()));
         emailObjectText.setText("Object: " + email.getMailObject());
         emailTextArea.setText(email.getMainContent());
 

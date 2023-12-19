@@ -49,15 +49,15 @@ public class InboxController implements Initializable {
 
     private void loadAllEmails() {
         // TODO remove here!
-        //List<Email> inboxEmails = new CommunicationHelperMock().GetInboxEmailsMock();
-
+        List<Email> inboxEmails = new CommunicationHelperMock().GetInboxEmailsMock();
+/*
         ServerResponse serverResponse = new CommunicationHelper().GetInboxEmails();
         if (serverResponse.getResponseType() == ResponseType.ERROR) {
             errorLabel.setText("Error while retrieving the emails from the server");
             return;
         }
         List<Email> inboxEmails = (List<Email>) serverResponse.getPayload();
-
+*/
         for (Email inboxEmail : inboxEmails) {
             HBox hBox = new HBox();
             hBox.setAlignment(Pos.TOP_LEFT);
