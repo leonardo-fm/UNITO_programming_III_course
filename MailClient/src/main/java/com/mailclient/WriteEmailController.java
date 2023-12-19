@@ -35,6 +35,9 @@ public class WriteEmailController {
     private TextField toTextField;
 
     @FXML
+    private TextField emailObjectTextField;
+
+    @FXML
     private TextArea emailTextArea;
 
     @FXML
@@ -83,7 +86,8 @@ public class WriteEmailController {
     private Email GenerateEmailFromUserData() {
         String sender = SessionData.getInstance().getUserLogged();
         List<String> receivers = Arrays.stream(toTextField.getText().replaceAll("\\s+", "").split(",", -1)).toList();
+        String emailObject = emailObjectTextField.getText();
         String emailContent = emailTextArea.getText();
-        return new Email(sender, receivers, emailContent);
+        return new Email(sender, receivers, emailObject, emailContent);
     }
 }

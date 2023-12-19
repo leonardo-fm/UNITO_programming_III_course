@@ -1,7 +1,6 @@
 package com.mailclient;
 
 import com.sharedmodels.Email;
-import com.sharedmodels.ServerRequest;
 import com.sharedmodels.ServerResponse;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -14,12 +13,7 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
 import java.util.*;
-
-import static com.sharedmodels.MethodType.SEND_EMAIL;
 
 public class ReadEmailController {
 
@@ -35,6 +29,9 @@ public class ReadEmailController {
     private Text toText;
 
     @FXML
+    private Text emailObjectText;
+
+    @FXML
     private TextArea emailTextArea;
 
     public void Setup(Email email) {
@@ -42,6 +39,7 @@ public class ReadEmailController {
 
         fromText.setText(email.getSender());
         toText.setText(String.join(", ", email.getReceivers()));
+        emailObjectText.setText(email.getMailObject());
         emailTextArea.setText(email.getMainContent());
     }
 
@@ -90,8 +88,9 @@ public class ReadEmailController {
     private Email GenerateForwardEmail(String forwardTo) {
         String sender = SessionData.getInstance().getUserLogged();
         List<String> receivers = Arrays.stream(forwardTo.replaceAll("\\s+", "").split(",", -1)).toList();
+        String emailObject = currentOpenedEmail.getMailObject();
         String emailContent = currentOpenedEmail.getMainContent();
-        return new Email(sender, receivers, emailContent);
+        return new Email(sender, receivers, emailObject, emailContent);
     }
 
     public void onReplyBtnClick(ActionEvent event) throws IOException {

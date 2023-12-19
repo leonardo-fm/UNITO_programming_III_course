@@ -56,6 +56,7 @@ public class InboxController implements Initializable {
             hBox.setPadding(new Insets(5, 5, 5, 5));
 
             Text from = new Text(inboxEmails.get(i).getSender() + "\t");
+            Text emailObject = new Text(inboxEmails.get(i).getMailObject() + "\t");
             Text emailText = new Text(inboxEmails.get(i).getMainContent());
             Button button = new Button("Read");
             button.setOnMouseClicked(event -> {
@@ -77,6 +78,7 @@ public class InboxController implements Initializable {
 
             hBox.getChildren().add(button);
             hBox.getChildren().add(from);
+            hBox.getChildren().add(emailObject);
             hBox.getChildren().add(emailText);
             inboxHolder.getChildren().add(hBox);
         }
