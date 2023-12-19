@@ -72,4 +72,16 @@ public class Email implements Serializable {
     public void setMailDate(Date mailDate) {
         this.mailDate = mailDate;
     }
+
+    @Override
+    public String toString() {
+        return "Email{" +
+                "id=" + id +
+                ", sender='" + sender + '\'' +
+                ", receivers=" + receivers +
+                ", mailObject='" + mailObject + '\'' +
+                ", mainContent='" + mainContent + '\'' +
+                ", mailDate=" + mailDate +
+                '}';
+    }
 }

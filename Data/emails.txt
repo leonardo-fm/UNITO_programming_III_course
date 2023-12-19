@@ -1,3 +1,4 @@
 yotsumi.dev@gmail.com;1
 very.base@icloud.com;2
 example@test.mail;3
+example@edu.it;4

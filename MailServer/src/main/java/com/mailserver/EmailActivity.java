@@ -32,8 +32,8 @@ public class EmailActivity implements Runnable {
             ServerResponse res = new ServerResponse();
             switch (req.getMethodType()){
                 case SEND_EMAIL -> sendEmail(req, res);
-                case DELETE_EMAIL -> deleteEmail(res);
-                case GET_ALL_EMAILS -> getAllEmails(res);
+                case DELETE_EMAIL -> deleteEmail(req, res);
+                case GET_ALL_EMAILS -> getAllEmails(req, res);
             }
             ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
             out.writeObject(res);
@@ -44,41 +44,76 @@ public class EmailActivity implements Runnable {
 
     private void sendEmail(ServerRequest req, ServerResponse res){
         Email email = (Email) req.getPayload();
+        System.out.println(email);
         serverModel.addLog("Received request: SEND EMAIL from " + socket.getInetAddress() + ':' + socket.getPort());
+
+        // Searching for not existing email address
         String mailAddressId = config.getMailAddresses().get(email.getSender());
         if (mailAddressId == null){
-            res.setResponseType(ResponseType.INVALID_SENDER_MAIL_ADDRESS);
             serverModel.addLog("Invalid request: INVALID SENDER MAIL ADDRESS of " + email.getSender());
+            res.setResponseType(ResponseType.INVALID_SENDER_MAIL_ADDRESS);
             res.setResponseDescription("INVALID SENDER MAIL ADDRESS of " + email.getSender());
             return;
         }
+        for (String emailAddress : email.getReceivers()) {
+            String id = config.getMailAddresses().get(emailAddress);
+            if (id == null) {
+                serverModel.addLog("Invalid request: INVALID RECEIVER MAIL ADDRESS - " + email.getSender());
+                res.setResponseType(ResponseType.INVALID_RECEIVER_MAIL_ADDRESS);
+                res.setResponseDescription("INVALID RECEIVER MAIL ADDRESS - " + email.getSender());
+                return;
+            }
+        }
+
         // Saving sender email into file
+        if (!saveEmailOnFile(mailAddressId, email)){
+            res.setResponseType(ResponseType.SAVING_DATA_ERROR);
+            res.setResponseDescription("Error on saving email");
+            return;
+        }
+
+        // Saving email for receivers
+        for (String emailAddress : email.getReceivers()){
+            String id = config.getMailAddresses().get(emailAddress);
+            if (!saveEmailOnFile(id, email)){
+                res.setResponseType(ResponseType.SAVING_DATA_ERROR);
+                res.setResponseDescription("Error on saving email");
+                return;
+            }
+        }
+        res.setResponseType(ResponseType.OK);
+    }
+
+    private void deleteEmail(ServerRequest req, ServerResponse res){
+        System.out.println("DELETE EMAIL");
+    }
+
+    private void getAllEmails(ServerRequest req, ServerResponse res){
+        String emailAddress = (String) req.getPayload();
+        serverModel.addLog("Received request: GET ALL EMAILS from " + socket.getInetAddress() + ':' + socket.getPort());
+
+    }
+
+    private boolean saveEmailOnFile(String id, Email email){
         List<Email> emails;
         try {
-            emails = (List<Email>)FileUtility.readFileObject("Data/mail_data_" + mailAddressId);
+            emails = (List<Email>)FileUtility.readFileObject("Data/mail_data_" + id);
         }
         catch (FileNotFoundException ex){
             emails = new ArrayList<>();
         }
         catch (IOException | ClassNotFoundException ex){
-            serverModel.addLog("Error on reading file: " + "Data/mail_data_" + mailAddressId + "\n" + ex);
-            return;
+            serverModel.addLog("Error on reading file: " + "Data/mail_data_" + id + "\n" + ex);
+            return false;
         }
         emails.add(email);
         try {
-            FileUtility.writeFileObject("Data/mail_data_" + mailAddressId, emails);
+            FileUtility.writeFileObject("Data/mail_data_" + id, emails);
         }
         catch (IOException ex){
-            serverModel.addLog("Error on writing file: " + "Data/mail_data_" + mailAddressId + "\n" + ex);
+            serverModel.addLog("Error on writing file: " + "Data/mail_data_" + id + "\n" + ex);
+            return false;
         }
-        res.setResponseType(ResponseType.OK);
-    }
-
-    private void deleteEmail(ServerResponse res){
-        System.out.println("DELETE EMAIL");
-    }
-
-    private void getAllEmails(ServerResponse res){
-        System.out.println("GET ALL EMAILS");
+        return true;
     }
 }
