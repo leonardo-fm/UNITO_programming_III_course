@@ -4,16 +4,11 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.Pane?>
-<?import javafx.scene.text.Text?>
 
 <Pane fx:id="readPane" prefHeight="434.0" prefWidth="365.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mailclient.ReadEmailController">
    <children>
       <Label fx:id="errorLabel" disable="true" layoutX="12.0" layoutY="18.0" text="Error string here" textFill="RED" />
-      <Text fx:id="dateText" layoutX="12.0" layoutY="69.0" strokeType="OUTSIDE" strokeWidth="0.0" text="12 / 12 / 2022" />
-      <Text fx:id="fromText" layoutX="13.0" layoutY="93.0" strokeType="OUTSIDE" strokeWidth="0.0" text="From: example@gmail.com" />
-      <Text fx:id="toText" layoutX="14.0" layoutY="116.0" strokeType="OUTSIDE" strokeWidth="0.0" text="To: example@gmail.com, example@gmail.com" />
-      <Text fx:id="emailObjectText" layoutX="14.0" layoutY="140.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Object: test test example@" />
-      <TextArea fx:id="emailTextArea" editable="false" focusTraversable="false" layoutX="14.0" layoutY="151.0" prefHeight="230.0" prefWidth="337.0" wrapText="true" />
+      <TextArea fx:id="emailTextArea" editable="false" focusTraversable="false" layoutX="14.0" layoutY="53.0" prefHeight="328.0" prefWidth="337.0" wrapText="true" />
       <Button layoutX="299.0" layoutY="14.0" mnemonicParsing="false" onAction="#onCancelBtnClick" text="Cancel" />
       <Button layoutX="14.0" layoutY="395.0" mnemonicParsing="false" onAction="#onDeleteBtnClick" text="Delete" />
       <Button layoutX="159.0" layoutY="395.0" mnemonicParsing="false" onAction="#onForwardBtnClick" text="Forward" />

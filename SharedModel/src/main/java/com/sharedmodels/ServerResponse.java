@@ -8,6 +8,13 @@ public class ServerResponse implements Serializable {
     private String responseDescription;
     private Object payload;
 
+    public ServerResponse() { }
+    public ServerResponse(ResponseType responseType, String responseDescription, Object payload) {
+        this.responseType = responseType;
+        this.responseDescription = responseDescription;
+        this.payload = payload;
+    }
+
     public ResponseType getResponseType() {
         return responseType;
     }

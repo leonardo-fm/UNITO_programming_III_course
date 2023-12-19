@@ -3,18 +3,12 @@ package com.mailclient;
 import com.sharedmodels.Email;
 import com.sharedmodels.ResponseType;
 import com.sharedmodels.ServerResponse;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Arrays;
@@ -44,14 +38,18 @@ public class WriteEmailController implements Initializable {
         toTextField.setText(String.join(", ", receivers));
     }
 
-    public void onCancelBtnClick(ActionEvent event) throws IOException {
+    @FXML
+    protected void onCancelBtnClick() throws IOException {
         Utils.loadNewScene("inbox-view.fxml");
     }
 
-    public void onSendBtnClick(ActionEvent event) throws IOException {
+    @FXML
+    protected void onSendBtnClick() throws IOException {
 
-        if (!IsEmailDataCorrect()) return;
-        ServerResponse serverResponse = new CommunicationHelper().SendEmail(GenerateEmailFromUserData());
+        if (!isEmailDataCorrect()) return;
+        errorLabel.setText("");
+
+        ServerResponse serverResponse = new CommunicationHelper().SendEmail(generateEmailFromUserData());
         if (serverResponse.getResponseType() == ResponseType.ERROR) {
             errorLabel.setText("Error while sending the emails to the server");
             return;
@@ -60,7 +58,7 @@ public class WriteEmailController implements Initializable {
         Utils.loadNewScene("inbox-view.fxml");
     }
 
-    private boolean IsEmailDataCorrect() {
+    private boolean isEmailDataCorrect() {
         String receiversText = toTextField.getText().replaceAll("\\s+", "");
         if (receiversText.isEmpty()) {
             errorLabel.setText("Must put at least one receiver");
@@ -84,7 +82,7 @@ public class WriteEmailController implements Initializable {
         return true;
     }
 
-    private Email GenerateEmailFromUserData() {
+    private Email generateEmailFromUserData() {
         String sender = SessionData.getInstance().getUserLogged();
         List<String> receivers = Arrays.stream(toTextField.getText().replaceAll("\\s+", "").split(",", -1)).toList();
         String emailObject = emailObjectTextField.getText();

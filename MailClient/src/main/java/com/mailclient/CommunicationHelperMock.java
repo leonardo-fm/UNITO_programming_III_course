@@ -8,6 +8,8 @@ import java.util.List;
 public class CommunicationHelperMock {
 
     public List<Email> GetInboxEmailsMock() {
+        System.out.println("Get emails from the server MOCK!");
+
         List<Email> data = new ArrayList<>();
         List<String> to = new ArrayList<>();
         to.add("567667556@gamil.com");

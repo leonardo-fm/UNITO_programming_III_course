@@ -3,15 +3,12 @@ package com.mailclient;
 import com.sharedmodels.Email;
 import com.sharedmodels.ResponseType;
 import com.sharedmodels.ServerResponse;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.FileNotFoundException;
@@ -28,14 +25,6 @@ public class ReadEmailController implements Initializable {
     @FXML
     private Label errorLabel;
     @FXML
-    private Text dateText;
-    @FXML
-    private Text fromText;
-    @FXML
-    private Text toText;
-    @FXML
-    private Text emailObjectText;
-    @FXML
     private TextArea emailTextArea;
 
     @Override
@@ -47,20 +36,29 @@ public class ReadEmailController implements Initializable {
     }
 
     public void Setup(Email email) {
-        dateText.setText("Sent date: " + email.getMailDate().toString());
-        fromText.setText("Sender: " + email.getSender());
-        toText.setText("Receivers: " + String.join(", ", email.getReceivers()));
-        emailObjectText.setText("Object: " + email.getMailObject());
-        emailTextArea.setText(email.getMainContent());
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(email.getMailDate().toString() + "\n");
+        stringBuilder.append("From: " + email.getSender() + "\n");
+        stringBuilder.append("To: " + String.join(", ", email.getReceivers()) + "\n");
+        stringBuilder.append("Object: " + email.getMailObject() + "\n");
+        stringBuilder.append("\n" + email.getMainContent());
+
+        emailTextArea.setText(stringBuilder.toString());
 
         currentOpenedEmail = email;
     }
 
-    public void onCancelBtnClick(ActionEvent event) throws IOException {
+    @FXML
+    protected void onCancelBtnClick() throws IOException {
         Utils.loadNewScene("inbox-view.fxml");
     }
 
-    public void onDeleteBtnClick(ActionEvent event) throws IOException {
+    @FXML
+    protected void onDeleteBtnClick() throws IOException {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you shore to delete this email?", ButtonType.OK, ButtonType.NO);
+        alert.showAndWait();
+        if (alert.getResult() == ButtonType.NO) return;
+
         ServerResponse serverResponse = new CommunicationHelper().DeleteEmail(currentOpenedEmail.getId());
         if (serverResponse.getResponseType() == ResponseType.ERROR) {
             errorLabel.setText("Error while sending the deletion request to the server");
@@ -70,8 +68,8 @@ public class ReadEmailController implements Initializable {
         Utils.loadNewScene("inbox-view.fxml");
     }
 
-
-    public void onForwardBtnClick(ActionEvent event) {
+    @FXML
+    protected void onForwardBtnClick() {
         TextInputDialog textInputDialog = new TextInputDialog();
         textInputDialog.setTitle("");
         textInputDialog.setHeaderText("Forward");
@@ -79,13 +77,8 @@ public class ReadEmailController implements Initializable {
         Optional<String> result = textInputDialog.showAndWait();
         result.ifPresent(forwardTo -> {
 
-            List<String> receivers = Arrays.stream(forwardTo.replaceAll("\\s+", "").split(",", -1)).toList();
-            for (String email : receivers) {
-                if (!Utils.isValidEmail(email)) {
-                    errorLabel.setText("The email " + email + " is not well formatted");
-                    return;
-                }
-            }
+            if (!isEmailDataCorrect(forwardTo)) return;
+            errorLabel.setText("");
 
             ServerResponse serverResponse = new CommunicationHelper().SendEmail(GenerateForwardEmail(forwardTo));
             if (serverResponse.getResponseType() == ResponseType.ERROR) {
@@ -101,6 +94,18 @@ public class ReadEmailController implements Initializable {
         });
     }
 
+    private boolean isEmailDataCorrect(String receiversText) {
+        List<String> receivers = Arrays.stream(receiversText.split(",", -1)).toList();
+        for (String email : receivers) {
+            if (!Utils.isValidEmail(email)) {
+                errorLabel.setText("The email " + email + " is not well formatted");
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     private Email GenerateForwardEmail(String forwardTo) {
         String sender = SessionData.getInstance().getUserLogged();
         List<String> receivers = Arrays.stream(forwardTo.replaceAll("\\s+", "").split(",", -1)).toList();
@@ -109,7 +114,8 @@ public class ReadEmailController implements Initializable {
         return new Email(sender, receivers, emailObject, emailContent);
     }
 
-    public void onReplyBtnClick(ActionEvent event) throws IOException {
+    @FXML
+    protected void onReplyBtnClick() throws IOException {
         URL loadedView = getClass().getResource("writeEmail-view.fxml");
         if (loadedView == null)
             throw new FileNotFoundException("Write page not found!");
@@ -128,7 +134,8 @@ public class ReadEmailController implements Initializable {
         currentStage.show();
     }
 
-    public void onReplyAllBtnClick(ActionEvent event) throws IOException {
+    @FXML
+    protected void onReplyAllBtnClick() throws IOException {
         URL loadedView = getClass().getResource("writeEmail-view.fxml");
         if (loadedView == null)
             throw new FileNotFoundException("Write page not found!");
