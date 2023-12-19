@@ -74,8 +74,8 @@ public class InboxController implements Initializable {
                     + inboxEmails.get(i).getMainContent());
             emailPreview.setTextAlignment(TextAlignment.CENTER);
 
-            if (emailPreview.getText().length() > 80)
-                emailPreview.setText(emailPreview.getText().substring(0, 80) + "...");
+            if (emailPreview.getText().length() > 75)
+                emailPreview.setText(emailPreview.getText().substring(0, 75) + "...");
 
             hBox.getChildren().add(button);
             hBox.getChildren().add(emailPreview);

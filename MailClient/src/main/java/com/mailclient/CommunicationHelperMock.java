@@ -12,6 +12,10 @@ public class CommunicationHelperMock {
         List<String> to = new ArrayList<>();
         to.add("567667556@gamil.com");
         to.add("Furr@yahoo.com");
+        to.add("Furr@yahoo.com");
+        to.add("Furr@yahoo.com");
+        to.add("Furr@yahoo.com");
+
 
         data.add(new Email("abc@gmail.com", to, "jec wdwdt", "Some of to know more about them, I.E: to know which fits better your needs."));
         data.add(new Email("loller@gmail.com", to, "emailObjecd wdwwqwdqq t", "Some, I.E: to know which fits better your needs."));

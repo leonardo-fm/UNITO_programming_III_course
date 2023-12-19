@@ -5,6 +5,7 @@ import com.sharedmodels.ServerResponse;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -13,9 +14,10 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.*;
 
-public class ReadEmailController {
+public class ReadEmailController implements Initializable {
 
     private Stage stage;
     private Scene scene;
@@ -23,27 +25,33 @@ public class ReadEmailController {
     private Email currentOpenedEmail;
 
     @FXML
+    private Label errorLabel;
+    @FXML
     private Text dateText;
-
     @FXML
     private Text fromText;
-
     @FXML
     private Text toText;
-
     @FXML
     private Text emailObjectText;
-
     @FXML
     private TextArea emailTextArea;
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        SessionData.getInstance().getCurrentStage().setTitle("Read");
+        SessionData.getInstance().getCurrentStage().setResizable(false);
+
+        errorLabel.setText("");
+    }
 
     public void Setup(Email email) {
         currentOpenedEmail = email;
 
-        dateText.setText(email.getMailDate().toString());
-        fromText.setText(email.getSender());
-        toText.setText(String.join(", ", email.getReceivers()));
-        emailObjectText.setText(email.getMailObject());
+        dateText.setText("Sent date: " + email.getMailDate().toString());
+        fromText.setText("Sender: " + email.getSender());
+        toText.setText("Receivers: " + String.join(", ", email.getReceivers()));
+        emailObjectText.setText("Object: " + email.getMailObject());
         emailTextArea.setText(email.getMainContent());
     }
 
@@ -69,10 +77,11 @@ public class ReadEmailController {
 
     public void onForwardBtnClick(ActionEvent event) {
 
-        TextInputDialog tid = new TextInputDialog();
-        tid.setHeaderText("Forward");
-        tid.setContentText("To: ");
-        Optional<String> result = tid.showAndWait();
+        TextInputDialog textInputDialog = new TextInputDialog();
+        textInputDialog.setTitle("");
+        textInputDialog.setHeaderText("Forward");
+        textInputDialog.setContentText("To: ");
+        Optional<String> result = textInputDialog.showAndWait();
         result.ifPresent(forwardTo -> {
 
             ServerResponse serverResponse = new CommunicationHelper().SendEmail(GenerateForwardEmail(forwardTo));
