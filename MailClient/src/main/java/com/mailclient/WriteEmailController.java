@@ -40,6 +40,10 @@ public class WriteEmailController {
     @FXML
     private Label errorLabel;
 
+    public void SetupReply(List<String> receivers) {
+        toTextField.setText(String.join(", ", receivers));
+    }
+
     public void onCancelBtnClick(ActionEvent event) throws IOException {
         root = FXMLLoader.load(getClass().getResource("inbox-view.fxml"));
         stage = (Stage)((Node)event.getSource()).getScene().getWindow();

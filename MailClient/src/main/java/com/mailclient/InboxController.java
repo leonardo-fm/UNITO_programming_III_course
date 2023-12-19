@@ -58,13 +58,26 @@ public class InboxController implements Initializable {
             Text from = new Text(inboxEmails.get(i).getSender() + "\t");
             Text emailText = new Text(inboxEmails.get(i).getMainContent());
             Button button = new Button("Read");
-            button.setOnMouseClicked(e -> {
-                System.out.println("F! " + inboxEmails.get(index).getId());
+            button.setOnMouseClicked(event -> {
+                try {
+                    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("readEmail-view.fxml"));
+                    root = fxmlLoader.load();
+
+                    ReadEmailController readEmailController = fxmlLoader.getController();
+                    readEmailController.Setup(inboxEmails.get(index));
+
+                    stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+                    scene = new Scene(root);
+                    stage.setScene(scene);
+                    stage.show();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
             });
 
+            hBox.getChildren().add(button);
             hBox.getChildren().add(from);
             hBox.getChildren().add(emailText);
-            hBox.getChildren().add(button);
             inboxHolder.getChildren().add(hBox);
         }
     }
@@ -79,14 +92,6 @@ public class InboxController implements Initializable {
 
     public void onLogoutBtnClick(ActionEvent event) throws IOException {
         root = FXMLLoader.load(getClass().getResource("login-view.fxml"));
-        stage = (Stage)((Node)event.getSource()).getScene().getWindow();
-        scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
-    }
-
-    public void onReadBtnClick(ActionEvent event) throws IOException {
-        root = FXMLLoader.load(getClass().getResource("readEmail-view.fxml"));
         stage = (Stage)((Node)event.getSource()).getScene().getWindow();
         scene = new Scene(root);
         stage.setScene(scene);
