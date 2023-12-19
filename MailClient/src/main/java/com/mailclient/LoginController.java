@@ -1,5 +1,7 @@
 package com.mailclient;
 
+import com.sharedmodels.ResponseType;
+import com.sharedmodels.ServerResponse;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
@@ -30,13 +32,19 @@ public class LoginController implements Initializable {
 
     @FXML
     protected void onLoginBtnClick() throws IOException {
-        String selectedUsername = usernameTextField.getText();
-        if (!Utils.isValidEmail(selectedUsername)) {
+        String emailAddress = usernameTextField.getText();
+        if (!Utils.isValidEmail(emailAddress)) {
             errorLabel.setText("The username is not an email!");
             return;
         }
 
-        SessionData.getInstance().setUserLogged(selectedUsername);
+        ServerResponse serverResponse = new CommunicationHelper().checkSupportedEmailAddress(emailAddress);
+        if (serverResponse.getResponseType() != ResponseType.OK) {
+            errorLabel.setText("The username is not in the list of valid email addresses!");
+            return;
+        }
+
+        SessionData.getInstance().setUserLogged(emailAddress);
 
         Utils.loadNewScene("inbox-view.fxml");
     }

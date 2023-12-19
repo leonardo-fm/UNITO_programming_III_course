@@ -51,7 +51,7 @@ public class InboxController implements Initializable {
 /*
         if (!SessionData.getInstance().isInboxLoaded()) {
             ServerResponse serverResponse = new CommunicationHelper().GetInboxEmails();
-            if (serverResponse.getResponseType() == ResponseType.ERROR) {
+            if (serverResponse.getResponseType() != ResponseType.OK) {
                 errorLabel.setText("Error while retrieving the emails from the server");
                 return;
             }
