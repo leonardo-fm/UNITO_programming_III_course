@@ -61,6 +61,25 @@ public class CommunicationHelper {
         }
     }
 
+    public ServerResponse GetNewEmails() {
+        try {
+            if (socket == null) throw new IOException();
+
+            ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
+            ServerRequest req = new ServerRequest(GET_NEW_EMAILS);
+            outputStream.writeObject(req);
+
+            System.out.println("Get new emails from the server");
+
+            ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
+            ServerResponse serverResponse = (ServerResponse) inputStream.readObject();
+
+            return serverResponse;
+        } catch (IOException | ClassNotFoundException e) {
+            return new ServerResponse(ResponseType.ERROR, "Error while communicating with the server", null);
+        }
+    }
+
     public ServerResponse DeleteEmail(UUID emailUUID) {
         try {
             if (socket == null) throw new IOException();
