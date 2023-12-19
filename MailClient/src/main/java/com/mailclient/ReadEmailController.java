@@ -23,6 +23,9 @@ public class ReadEmailController {
     private Email currentOpenedEmail;
 
     @FXML
+    private Text dateText;
+
+    @FXML
     private Text fromText;
 
     @FXML
@@ -37,6 +40,7 @@ public class ReadEmailController {
     public void Setup(Email email) {
         currentOpenedEmail = email;
 
+        dateText.setText(email.getMailDate().toString());
         fromText.setText(email.getSender());
         toText.setText(String.join(", ", email.getReceivers()));
         emailObjectText.setText(email.getMailObject());

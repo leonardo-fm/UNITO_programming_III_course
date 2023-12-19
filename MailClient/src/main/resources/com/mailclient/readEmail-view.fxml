@@ -20,5 +20,6 @@
       <Label layoutX="22.0" layoutY="94.0" text="to" />
       <Text fx:id="emailObjectText" layoutX="69.0" layoutY="132.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
       <Label layoutX="23.0" layoutY="119.0" text="object" />
+      <Text fx:id="dateText" layoutX="274.0" layoutY="80.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Text" />
    </children>
 </Pane>
