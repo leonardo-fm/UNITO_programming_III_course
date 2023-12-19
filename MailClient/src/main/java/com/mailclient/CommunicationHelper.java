@@ -37,7 +37,7 @@ public class CommunicationHelper {
         }
     }
 
-    public List<Email> GetInboxEmails() {
+    public ServerResponse GetInboxEmails() {
         try {
             ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
             ServerRequest req = new ServerRequest(GET_ALL_EMAILS);
@@ -46,8 +46,7 @@ public class CommunicationHelper {
             ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
             ServerResponse serverResponse = (ServerResponse) inputStream.readObject();
 
-            // Is not good :\
-            return (List<Email>) serverResponse.getPayload();
+            return serverResponse;
         } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }

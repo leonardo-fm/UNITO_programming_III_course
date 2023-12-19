@@ -1,6 +1,7 @@
 package com.mailclient;
 
 import com.sharedmodels.Email;
+import com.sharedmodels.ResponseType;
 import com.sharedmodels.ServerResponse;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -13,13 +14,13 @@ import javafx.scene.control.*;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.*;
 
 public class ReadEmailController implements Initializable {
 
-    private Stage stage;
     private Scene scene;
     private Parent root;
     private Email currentOpenedEmail;
@@ -46,37 +47,31 @@ public class ReadEmailController implements Initializable {
     }
 
     public void Setup(Email email) {
-        currentOpenedEmail = email;
-
         dateText.setText("Sent date: " + email.getMailDate().toString());
         fromText.setText("Sender: " + email.getSender());
         toText.setText("Receivers: " + String.join(", ", email.getReceivers()));
         emailObjectText.setText("Object: " + email.getMailObject());
         emailTextArea.setText(email.getMainContent());
+
+        currentOpenedEmail = email;
     }
 
     public void onCancelBtnClick(ActionEvent event) throws IOException {
-        root = FXMLLoader.load(getClass().getResource("inbox-view.fxml"));
-        stage = (Stage)((Node)event.getSource()).getScene().getWindow();
-        scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
+        Utils.loadNewScene("inbox-view.fxml");
     }
 
     public void onDeleteBtnClick(ActionEvent event) throws IOException {
-
         ServerResponse serverResponse = new CommunicationHelper().DeleteEmail(currentOpenedEmail.getId());
+        if (serverResponse.getResponseType() == ResponseType.ERROR) {
+            errorLabel.setText("Error while sending the deletion request to the server");
+            return;
+        }
 
-        root = FXMLLoader.load(getClass().getResource("inbox-view.fxml"));
-        stage = (Stage)((Node)event.getSource()).getScene().getWindow();
-        scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
+        Utils.loadNewScene("inbox-view.fxml");
     }
 
 
     public void onForwardBtnClick(ActionEvent event) {
-
         TextInputDialog textInputDialog = new TextInputDialog();
         textInputDialog.setTitle("");
         textInputDialog.setHeaderText("Forward");
@@ -84,14 +79,22 @@ public class ReadEmailController implements Initializable {
         Optional<String> result = textInputDialog.showAndWait();
         result.ifPresent(forwardTo -> {
 
+            List<String> receivers = Arrays.stream(forwardTo.replaceAll("\\s+", "").split(",", -1)).toList();
+            for (String email : receivers) {
+                if (!Utils.isValidEmail(email)) {
+                    errorLabel.setText("The email " + email + " is not well formatted");
+                    return;
+                }
+            }
+
             ServerResponse serverResponse = new CommunicationHelper().SendEmail(GenerateForwardEmail(forwardTo));
+            if (serverResponse.getResponseType() == ResponseType.ERROR) {
+                errorLabel.setText("Error while forwarding the email request to the server");
+                return;
+            }
 
             try {
-                root = FXMLLoader.load(getClass().getResource("inbox-view.fxml"));
-                stage = (Stage)((Node)event.getSource()).getScene().getWindow();
-                scene = new Scene(root);
-                stage.setScene(scene);
-                stage.show();
+                Utils.loadNewScene("inbox-view.fxml");
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -107,7 +110,11 @@ public class ReadEmailController implements Initializable {
     }
 
     public void onReplyBtnClick(ActionEvent event) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("writeEmail-view.fxml"));
+        URL loadedView = getClass().getResource("writeEmail-view.fxml");
+        if (loadedView == null)
+            throw new FileNotFoundException("Write page not found!");
+
+        FXMLLoader fxmlLoader = new FXMLLoader(loadedView);
         root = fxmlLoader.load();
 
         WriteEmailController writeEmailController = fxmlLoader.getController();
@@ -115,14 +122,18 @@ public class ReadEmailController implements Initializable {
         replyTo.add(currentOpenedEmail.getSender());
         writeEmailController.SetupReply(replyTo);
 
-        stage = (Stage)((Node)event.getSource()).getScene().getWindow();
         scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
+        Stage currentStage = SessionData.getInstance().getCurrentStage();
+        currentStage.setScene(scene);
+        currentStage.show();
     }
 
     public void onReplyAllBtnClick(ActionEvent event) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("writeEmail-view.fxml"));
+        URL loadedView = getClass().getResource("writeEmail-view.fxml");
+        if (loadedView == null)
+            throw new FileNotFoundException("Write page not found!");
+
+        FXMLLoader fxmlLoader = new FXMLLoader(loadedView);
         root = fxmlLoader.load();
 
         WriteEmailController writeEmailController = fxmlLoader.getController();
@@ -132,9 +143,9 @@ public class ReadEmailController implements Initializable {
         replyTo.remove(SessionData.getInstance().getUserLogged());
         writeEmailController.SetupReply(replyTo);
 
-        stage = (Stage)((Node)event.getSource()).getScene().getWindow();
         scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
+        Stage currentStage = SessionData.getInstance().getCurrentStage();
+        currentStage.setScene(scene);
+        currentStage.show();
     }
 }

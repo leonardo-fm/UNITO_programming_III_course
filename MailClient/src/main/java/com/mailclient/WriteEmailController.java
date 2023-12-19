@@ -1,13 +1,12 @@
 package com.mailclient;
 
 import com.sharedmodels.Email;
-import com.sharedmodels.ServerRequest;
+import com.sharedmodels.ResponseType;
 import com.sharedmodels.ServerResponse;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -15,20 +14,14 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
 import java.net.URL;
-import java.util.*;
-
-import static com.sharedmodels.MethodType.SEND_EMAIL;
+import java.util.Arrays;
+import java.util.List;
+import java.util.ResourceBundle;
 
 public class WriteEmailController implements Initializable {
-
-    private Stage stage;
-    private Scene scene;
-    private Parent root;
 
     @FXML
     private TextField toTextField;
@@ -52,23 +45,19 @@ public class WriteEmailController implements Initializable {
     }
 
     public void onCancelBtnClick(ActionEvent event) throws IOException {
-        root = FXMLLoader.load(getClass().getResource("inbox-view.fxml"));
-        stage = (Stage)((Node)event.getSource()).getScene().getWindow();
-        scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
+        Utils.loadNewScene("inbox-view.fxml");
     }
 
     public void onSendBtnClick(ActionEvent event) throws IOException {
 
         if (!IsEmailDataCorrect()) return;
         ServerResponse serverResponse = new CommunicationHelper().SendEmail(GenerateEmailFromUserData());
+        if (serverResponse.getResponseType() == ResponseType.ERROR) {
+            errorLabel.setText("Error while sending the emails to the server");
+            return;
+        }
 
-        root = FXMLLoader.load(getClass().getResource("inbox-view.fxml"));
-        stage = (Stage)((Node)event.getSource()).getScene().getWindow();
-        scene = new Scene(root);
-        stage.setScene(scene);
-        stage.show();
+        Utils.loadNewScene("inbox-view.fxml");
     }
 
     private boolean IsEmailDataCorrect() {
@@ -78,9 +67,17 @@ public class WriteEmailController implements Initializable {
             return false;
         }
 
+        List<String> receivers = Arrays.stream(receiversText.split(",", -1)).toList();
+        for (String email : receivers) {
+           if (!Utils.isValidEmail(email)) {
+               errorLabel.setText("The email " + email + " is not well formatted");
+               return false;
+           }
+        }
+
         String emailText = emailTextArea.getText().replaceAll("\\s+", "");
         if (emailText.isEmpty()) {
-            errorLabel.setText("No email body");
+            errorLabel.setText("Email body must contain something");
             return false;
         }
 

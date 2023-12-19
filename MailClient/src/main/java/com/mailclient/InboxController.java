@@ -1,7 +1,7 @@
 package com.mailclient;
 
 import com.sharedmodels.Email;
-import com.sharedmodels.ServerRequest;
+import com.sharedmodels.ResponseType;
 import com.sharedmodels.ServerResponse;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -9,7 +9,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -19,25 +18,15 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
-import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
 import java.net.URL;
-import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.UUID;
-
-import static com.sharedmodels.MethodType.SEND_EMAIL;
 
 public class InboxController implements Initializable {
-
-    private Scene scene;
-    private Parent root;
 
     @FXML
     private Label username;
@@ -59,19 +48,29 @@ public class InboxController implements Initializable {
     }
 
     private void loadAllEmails() {
+        // TODO remove here!
         List<Email> inboxEmails = new CommunicationHelperMock().GetInboxEmailsMock();
-        for (int i = 0; i < inboxEmails.size(); i++) {
+
+        /*
+        ServerResponse serverResponse = new CommunicationHelper().GetInboxEmails();
+        if (serverResponse.getResponseType() == ResponseType.ERROR) {
+            errorLabel.setText("Error while retrieving the emails from the server");
+            return;
+        }
+        List<Email> inboxEmails = (List<Email>) serverResponse.getPayload();
+        */
+
+        for (Email inboxEmail : inboxEmails) {
             HBox hBox = new HBox();
             hBox.setAlignment(Pos.TOP_LEFT);
             hBox.setPadding(new Insets(10));
             hBox.setPrefWidth(inboxHolder.getPrefWidth() - 50);
 
-            Button button = generateButton(inboxEmails.get(i));
-
+            Button button = generateButton(inboxEmail);
             Text emailPreview = new Text(
-                     "\t" + inboxEmails.get(i).getSender() + " | "
-                    + inboxEmails.get(i).getMailObject() + " - "
-                    + inboxEmails.get(i).getMainContent());
+                    "\t" + inboxEmail.getSender() + " | "
+                            + inboxEmail.getMailObject() + " - "
+                            + inboxEmail.getMainContent());
             emailPreview.setTextAlignment(TextAlignment.CENTER);
 
             if (emailPreview.getText().length() > 75)
@@ -84,18 +83,16 @@ public class InboxController implements Initializable {
     }
 
     private Button generateButton(Email email) {
-
         Button button = new Button("Read");
-
         button.setOnMouseClicked(event -> {
             try {
                 FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("readEmail-view.fxml"));
-                root = fxmlLoader.load();
+                Parent root = fxmlLoader.load();
 
                 ReadEmailController readEmailController = fxmlLoader.getController();
                 readEmailController.Setup(email);
 
-                scene = new Scene(root);
+                Scene scene = new Scene(root);
 
                 Stage currentStage = SessionData.getInstance().getCurrentStage();
                 currentStage.setScene(scene);
@@ -104,24 +101,15 @@ public class InboxController implements Initializable {
                 throw new RuntimeException(ex);
             }
         });
+
         return button;
     }
 
     public void onWriteBtnClick(ActionEvent event) throws IOException {
-        root = FXMLLoader.load(getClass().getResource("writeEmail-view.fxml"));
-        scene = new Scene(root);
-
-        Stage currentStage = SessionData.getInstance().getCurrentStage();
-        currentStage.setScene(scene);
-        currentStage.show();
+        Utils.loadNewScene("writeEmail-view.fxml");
     }
 
     public void onLogoutBtnClick(ActionEvent event) throws IOException {
-        root = FXMLLoader.load(getClass().getResource("login-view.fxml"));
-        scene = new Scene(root);
-
-        Stage currentStage = SessionData.getInstance().getCurrentStage();
-        currentStage.setScene(scene);
-        currentStage.show();
+        Utils.loadNewScene("login-view.fxml");
     }
 }
