@@ -103,11 +103,13 @@ public class InboxController implements Initializable {
         return button;
     }
 
-    public void onWriteBtnClick(ActionEvent event) throws IOException {
+    @FXML
+    protected void onWriteBtnClick() throws IOException {
         Utils.loadNewScene("writeEmail-view.fxml");
     }
 
-    public void onLogoutBtnClick(ActionEvent event) throws IOException {
+    @FXML
+    protected void onLogoutBtnClick() throws IOException {
         Utils.loadNewScene("login-view.fxml");
     }
 }

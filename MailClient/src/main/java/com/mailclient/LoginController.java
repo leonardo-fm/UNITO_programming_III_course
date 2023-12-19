@@ -34,7 +34,8 @@ public class LoginController implements Initializable {
         loginPane.requestFocus();
     }
 
-    public void onLoginBtnClick(ActionEvent event) throws IOException {
+    @FXML
+    protected void onLoginBtnClick() throws IOException {
         String selectedUsername = usernameTextField.getText();
         if (!Utils.isValidEmail(selectedUsername)) {
             errorLabel.setText("The username is not an email!");

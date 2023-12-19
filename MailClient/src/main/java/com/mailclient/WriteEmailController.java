@@ -44,11 +44,13 @@ public class WriteEmailController implements Initializable {
         toTextField.setText(String.join(", ", receivers));
     }
 
-    public void onCancelBtnClick(ActionEvent event) throws IOException {
+    @FXML
+    protected void onCancelBtnClick() throws IOException {
         Utils.loadNewScene("inbox-view.fxml");
     }
 
-    public void onSendBtnClick(ActionEvent event) throws IOException {
+    @FXML
+    protected void onSendBtnClick() throws IOException {
 
         if (!isEmailDataCorrect()) return;
         errorLabel.setText("");

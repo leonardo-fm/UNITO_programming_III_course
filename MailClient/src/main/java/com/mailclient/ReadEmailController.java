@@ -13,6 +13,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.stage.Stage;
 
 import java.io.FileNotFoundException;
@@ -29,14 +30,6 @@ public class ReadEmailController implements Initializable {
     @FXML
     private Label errorLabel;
     @FXML
-    private Text dateText;
-    @FXML
-    private Text fromText;
-    @FXML
-    private Text toText;
-    @FXML
-    private Text emailObjectText;
-    @FXML
     private TextArea emailTextArea;
 
     @Override
@@ -48,20 +41,25 @@ public class ReadEmailController implements Initializable {
     }
 
     public void Setup(Email email) {
-        dateText.setText("Sent date: " + email.getMailDate().toString());
-        fromText.setText("From: " + email.getSender());
-        toText.setText("To: " + String.join(", ", email.getReceivers()));
-        emailObjectText.setText("Object: " + email.getMailObject());
-        emailTextArea.setText(email.getMainContent());
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(email.getMailDate().toString() + "\n");
+        stringBuilder.append("From: " + email.getSender() + "\n");
+        stringBuilder.append("To: " + String.join(", ", email.getReceivers()) + "\n");
+        stringBuilder.append("Object: " + email.getMailObject() + "\n");
+        stringBuilder.append("\n" + email.getMainContent());
+
+        emailTextArea.setText(stringBuilder.toString());
 
         currentOpenedEmail = email;
     }
 
-    public void onCancelBtnClick(ActionEvent event) throws IOException {
+    @FXML
+    protected void onCancelBtnClick() throws IOException {
         Utils.loadNewScene("inbox-view.fxml");
     }
 
-    public void onDeleteBtnClick(ActionEvent event) throws IOException {
+    @FXML
+    protected void onDeleteBtnClick() throws IOException {
         ServerResponse serverResponse = new CommunicationHelper().DeleteEmail(currentOpenedEmail.getId());
         if (serverResponse.getResponseType() == ResponseType.ERROR) {
             errorLabel.setText("Error while sending the deletion request to the server");
@@ -71,8 +69,8 @@ public class ReadEmailController implements Initializable {
         Utils.loadNewScene("inbox-view.fxml");
     }
 
-
-    public void onForwardBtnClick(ActionEvent event) {
+    @FXML
+    protected void onForwardBtnClick() {
         TextInputDialog textInputDialog = new TextInputDialog();
         textInputDialog.setTitle("");
         textInputDialog.setHeaderText("Forward");
@@ -117,7 +115,8 @@ public class ReadEmailController implements Initializable {
         return new Email(sender, receivers, emailObject, emailContent);
     }
 
-    public void onReplyBtnClick(ActionEvent event) throws IOException {
+    @FXML
+    protected void onReplyBtnClick() throws IOException {
         URL loadedView = getClass().getResource("writeEmail-view.fxml");
         if (loadedView == null)
             throw new FileNotFoundException("Write page not found!");
@@ -136,7 +135,8 @@ public class ReadEmailController implements Initializable {
         currentStage.show();
     }
 
-    public void onReplyAllBtnClick(ActionEvent event) throws IOException {
+    @FXML
+    protected void onReplyAllBtnClick() throws IOException {
         URL loadedView = getClass().getResource("writeEmail-view.fxml");
         if (loadedView == null)
             throw new FileNotFoundException("Write page not found!");
