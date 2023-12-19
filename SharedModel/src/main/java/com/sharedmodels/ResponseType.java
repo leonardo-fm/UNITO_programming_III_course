@@ -2,5 +2,6 @@ package com.sharedmodels;
 
 public enum ResponseType {
     OK,
-    ERROR
+    ERROR,
+    INVALID_SENDER_MAIL_ADDRESS
 }

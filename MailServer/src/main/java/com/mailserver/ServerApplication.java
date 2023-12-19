@@ -1,6 +1,7 @@
 package com.mailserver;
 
 import com.mailserver.controller.ServerController;
+import com.mailserver.model.ConfigModel;
 import com.mailserver.model.ServerModel;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -8,6 +9,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.List;
 
 public class ServerApplication extends Application {
     private Thread serverThread;
@@ -24,7 +26,15 @@ public class ServerApplication extends Application {
         stage.setScene(scene);
         stage.show();
 
-        serverThread = new Thread(new ServerActivity(serverModel));
+        ConfigModel config = new ConfigModel(8189);
+        List<String> mailConfigs = FileUtility.readFileLines("Data/emails.txt");
+        for (String mailConfig : mailConfigs){
+            String[] mail = mailConfig.split(";");
+            config.addMailAddress(mail[0], mail[1]);
+        }
+        serverModel.addLog(config.toString());
+
+        serverThread = new Thread(new ServerActivity(serverModel, config));
         serverThread.setDaemon(true);
         serverThread.start();
     }
