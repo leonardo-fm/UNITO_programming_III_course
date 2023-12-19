@@ -53,61 +53,65 @@ public class ReadEmailController {
         stage.show();
     }
 
-    public void onForwardBtnClick(ActionEvent event) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader();
-        fxmlLoader.setLocation(getClass().getResource("forwardEmail-dialogBox.fxml"));
-        DialogPane forwardEmailDialogPane = fxmlLoader.load();
 
-        Dialog<ButtonType> dialog = new Dialog<>();
-        dialog.setDialogPane(forwardEmailDialogPane);
+    public void onForwardBtnClick(ActionEvent event) {
 
-        Optional<ButtonType> clickedBtn = dialog.showAndWait();
-        if (clickedBtn.get() == ButtonType.OK) {
-            root = FXMLLoader.load(getClass().getResource("inbox-view.fxml"));
-            stage = (Stage)((Node)event.getSource()).getScene().getWindow();
-            scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
-        }
+        TextInputDialog tid = new TextInputDialog();
+        tid.setHeaderText("Forward");
+        tid.setContentText("To: ");
+        Optional<String> result = tid.showAndWait();
+        result.ifPresent(forwardTo -> {
+
+            ServerResponse serverResponse = new CommunicationHelper().SendEmail(GenerateForwardEmail(forwardTo));
+
+            try {
+                root = FXMLLoader.load(getClass().getResource("inbox-view.fxml"));
+                stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+                scene = new Scene(root);
+                stage.setScene(scene);
+                stage.show();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
+    }
+
+    private Email GenerateForwardEmail(String forwardTo) {
+        String sender = SessionData.getInstance().getUserLogged();
+        List<String> receivers = Arrays.stream(forwardTo.replaceAll("\\s+", "").split(",", -1)).toList();
+        String emailContent = currentOpenedEmail.getMainContent();
+        return new Email(sender, receivers, emailContent);
     }
 
     public void onReplyBtnClick(ActionEvent event) throws IOException {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("writeEmail-view.fxml"));
-            root = fxmlLoader.load();
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("writeEmail-view.fxml"));
+        root = fxmlLoader.load();
 
-            WriteEmailController writeEmailController = fxmlLoader.getController();
-            List<String> replyTo = new ArrayList<>();
-            replyTo.add(currentOpenedEmail.getSender());
-            writeEmailController.SetupReply(replyTo);
+        WriteEmailController writeEmailController = fxmlLoader.getController();
+        List<String> replyTo = new ArrayList<>();
+        replyTo.add(currentOpenedEmail.getSender());
+        writeEmailController.SetupReply(replyTo);
 
-            stage = (Stage)((Node)event.getSource()).getScene().getWindow();
-            scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException ex) {
-            throw new RuntimeException(ex);
-        }
+        stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
     }
 
     public void onReplyAllBtnClick(ActionEvent event) throws IOException {
-        try {
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("writeEmail-view.fxml"));
-            root = fxmlLoader.load();
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("writeEmail-view.fxml"));
+        root = fxmlLoader.load();
 
-            WriteEmailController writeEmailController = fxmlLoader.getController();
-            List<String> replyTo = new ArrayList<>();
-            replyTo.add(currentOpenedEmail.getSender());
-            replyTo.addAll(currentOpenedEmail.getReceivers());
-            replyTo.remove(SessionData.getInstance().getUserLogged());
-            writeEmailController.SetupReply(replyTo);
+        WriteEmailController writeEmailController = fxmlLoader.getController();
+        List<String> replyTo = new ArrayList<>();
+        replyTo.add(currentOpenedEmail.getSender());
+        replyTo.addAll(currentOpenedEmail.getReceivers());
+        replyTo.remove(SessionData.getInstance().getUserLogged());
+        writeEmailController.SetupReply(replyTo);
 
-            stage = (Stage)((Node)event.getSource()).getScene().getWindow();
-            scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
-        } catch (IOException ex) {
-            throw new RuntimeException(ex);
-        }
+        stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
     }
 }
