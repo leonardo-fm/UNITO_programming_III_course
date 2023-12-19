@@ -50,7 +50,7 @@ public class WriteEmailController implements Initializable {
         errorLabel.setText("");
 
         ServerResponse serverResponse = new CommunicationHelper().SendEmail(generateEmailFromUserData());
-        if (serverResponse.getResponseType() == ResponseType.ERROR) {
+        if (serverResponse.getResponseType() != ResponseType.OK) {
             errorLabel.setText("Error while sending the emails to the server");
             return;
         }

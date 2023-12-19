@@ -42,6 +42,23 @@ public class CommunicationHelper {
         }
     }
 
+    public ServerResponse checkSupportedEmailAddress(String emailAddress) {
+        try {
+            if (socket == null) throw new IOException();
+
+            ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
+            ServerRequest req = new ServerRequest(CHECK_SUPPORTED_EMAIL_ADDRESS, emailAddress);
+            outputStream.writeObject(req);
+
+            System.out.println("Sent check for email address to the server");
+
+            ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
+            return (ServerResponse) inputStream.readObject();
+        } catch (IOException | ClassNotFoundException e) {
+            return new ServerResponse(ResponseType.ERROR, "Error while communicating with the server", null);
+        }
+    }
+
     public ServerResponse GetInboxEmails() {
         try {
             if (socket == null) throw new IOException();

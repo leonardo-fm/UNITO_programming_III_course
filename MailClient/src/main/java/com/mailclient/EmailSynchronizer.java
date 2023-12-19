@@ -52,7 +52,7 @@ public class EmailSynchronizer {
             Thread.sleep(timeBetweenChecks);
 
             serverResponse = new CommunicationHelper().GetNewEmails();
-            if (serverResponse.getResponseType() == ResponseType.ERROR) {
+            if (serverResponse.getResponseType() != ResponseType.OK) {
                 if (--maxIncreaseTime <= 0)
                     timeBetweenChecks *= (long) 1.5;
                 continue;
