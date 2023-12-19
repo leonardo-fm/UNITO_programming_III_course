@@ -1,9 +1,6 @@
 package com.mailclient;
 
 import com.sharedmodels.Email;
-import com.sharedmodels.ResponseType;
-import com.sharedmodels.ServerResponse;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -20,7 +17,6 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
@@ -49,15 +45,22 @@ public class InboxController implements Initializable {
 
     private void loadAllEmails() {
         // TODO remove here!
-        List<Email> inboxEmails = new CommunicationHelperMock().GetInboxEmailsMock();
+        if (!SessionData.getInstance().isInboxLoaded())
+            SessionData.getInstance().setInboxEmails(new CommunicationHelperMock().GetInboxEmailsMock());
+        List<Email> inboxEmails = SessionData.getInstance().getInboxEmails();
 /*
-        ServerResponse serverResponse = new CommunicationHelper().GetInboxEmails();
-        if (serverResponse.getResponseType() == ResponseType.ERROR) {
-            errorLabel.setText("Error while retrieving the emails from the server");
-            return;
+        if (!SessionData.getInstance().isInboxLoaded()) {
+            ServerResponse serverResponse = new CommunicationHelper().GetInboxEmails();
+            if (serverResponse.getResponseType() == ResponseType.ERROR) {
+                errorLabel.setText("Error while retrieving the emails from the server");
+                return;
+            }
+
+            SessionData.getInstance().setInboxEmails((List<Email>) serverResponse.getPayload(););
         }
-        List<Email> inboxEmails = (List<Email>) serverResponse.getPayload();
+        List<Email> inboxEmails = SessionData.getInstance().getInboxEmails();
 */
+
         for (Email inboxEmail : inboxEmails) {
             HBox hBox = new HBox();
             hBox.setAlignment(Pos.TOP_LEFT);
