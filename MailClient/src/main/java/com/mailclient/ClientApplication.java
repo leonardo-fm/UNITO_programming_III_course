@@ -21,6 +21,8 @@ public class ClientApplication extends Application {
         if (landingPageUrl == null)
             throw new FileNotFoundException("Landing page not found!");
 
+        SessionData.getInstance().setCurrentStage(stage);
+
         Parent root = FXMLLoader.load(landingPageUrl);
         Scene scene = new Scene(root);
         stage.setScene(scene);
