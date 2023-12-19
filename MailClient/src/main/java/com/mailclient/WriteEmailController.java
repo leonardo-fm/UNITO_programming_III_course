@@ -50,8 +50,10 @@ public class WriteEmailController implements Initializable {
 
     public void onSendBtnClick(ActionEvent event) throws IOException {
 
-        if (!IsEmailDataCorrect()) return;
-        ServerResponse serverResponse = new CommunicationHelper().SendEmail(GenerateEmailFromUserData());
+        if (!isEmailDataCorrect()) return;
+        errorLabel.setText("");
+
+        ServerResponse serverResponse = new CommunicationHelper().SendEmail(generateEmailFromUserData());
         if (serverResponse.getResponseType() == ResponseType.ERROR) {
             errorLabel.setText("Error while sending the emails to the server");
             return;
@@ -60,7 +62,7 @@ public class WriteEmailController implements Initializable {
         Utils.loadNewScene("inbox-view.fxml");
     }
 
-    private boolean IsEmailDataCorrect() {
+    private boolean isEmailDataCorrect() {
         String receiversText = toTextField.getText().replaceAll("\\s+", "");
         if (receiversText.isEmpty()) {
             errorLabel.setText("Must put at least one receiver");
@@ -84,7 +86,7 @@ public class WriteEmailController implements Initializable {
         return true;
     }
 
-    private Email GenerateEmailFromUserData() {
+    private Email generateEmailFromUserData() {
         String sender = SessionData.getInstance().getUserLogged();
         List<String> receivers = Arrays.stream(toTextField.getText().replaceAll("\\s+", "").split(",", -1)).toList();
         String emailObject = emailObjectTextField.getText();

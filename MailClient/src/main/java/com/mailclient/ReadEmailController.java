@@ -7,10 +7,11 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -79,13 +80,8 @@ public class ReadEmailController implements Initializable {
         Optional<String> result = textInputDialog.showAndWait();
         result.ifPresent(forwardTo -> {
 
-            List<String> receivers = Arrays.stream(forwardTo.replaceAll("\\s+", "").split(",", -1)).toList();
-            for (String email : receivers) {
-                if (!Utils.isValidEmail(email)) {
-                    errorLabel.setText("The email " + email + " is not well formatted");
-                    return;
-                }
-            }
+            if (!isEmailDataCorrect(forwardTo)) return;
+            errorLabel.setText("");
 
             ServerResponse serverResponse = new CommunicationHelper().SendEmail(GenerateForwardEmail(forwardTo));
             if (serverResponse.getResponseType() == ResponseType.ERROR) {
@@ -99,6 +95,18 @@ public class ReadEmailController implements Initializable {
                 throw new RuntimeException(e);
             }
         });
+    }
+
+    private boolean isEmailDataCorrect(String receiversText) {
+        List<String> receivers = Arrays.stream(receiversText.split(",", -1)).toList();
+        for (String email : receivers) {
+            if (!Utils.isValidEmail(email)) {
+                errorLabel.setText("The email " + email + " is not well formatted");
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private Email GenerateForwardEmail(String forwardTo) {

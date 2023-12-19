@@ -41,6 +41,8 @@ public class LoginController implements Initializable {
             return;
         }
 
+        SessionData.getInstance().setUserLogged(selectedUsername);
+
         Utils.loadNewScene("inbox-view.fxml");
     }
 }
