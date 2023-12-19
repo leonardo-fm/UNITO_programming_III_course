@@ -15,12 +15,13 @@ public class Email implements Serializable {
 
     public Email() { }
 
-    public Email(String sender, List<String> receivers, String mainContent) {
+    public Email(String sender, List<String> receivers, String emailObject, String mainContent) {
         this.id = UUID.randomUUID();
         this.mailDate = new Date();
 
         this.sender = sender;
         this.receivers = receivers;
+        this.mailObject = emailObject;
         this.mainContent = mainContent;
     }
 
