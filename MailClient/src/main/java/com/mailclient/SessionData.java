@@ -25,6 +25,7 @@ public class SessionData {
     public void setUserLogged(String userLogged) {
         this.userLogged = userLogged;
         isInboxLoaded = false;
+        EmailSynchronizer.getInstance().stopCheckForNewEmails();
     }
     public String getUserLogged() {
         return this.userLogged;
@@ -43,6 +44,7 @@ public class SessionData {
     public void setInboxEmails(List<Email> inboxEmails) {
         this.inboxEmails = inboxEmails;
         isInboxLoaded = true;
+        EmailSynchronizer.getInstance().startCheckForNewEmails();
     }
 
     public boolean isInboxLoaded() {

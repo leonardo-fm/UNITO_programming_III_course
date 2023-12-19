@@ -8,9 +8,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 import java.io.FileNotFoundException;
@@ -57,6 +55,10 @@ public class ReadEmailController implements Initializable {
 
     @FXML
     protected void onDeleteBtnClick() throws IOException {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you shore to delete this email?", ButtonType.OK, ButtonType.NO);
+        alert.showAndWait();
+        if (alert.getResult() == ButtonType.NO) return;
+
         ServerResponse serverResponse = new CommunicationHelper().DeleteEmail(currentOpenedEmail.getId());
         if (serverResponse.getResponseType() == ResponseType.ERROR) {
             errorLabel.setText("Error while sending the deletion request to the server");

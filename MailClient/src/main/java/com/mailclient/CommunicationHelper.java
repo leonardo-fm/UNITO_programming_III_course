@@ -47,7 +47,7 @@ public class CommunicationHelper {
             if (socket == null) throw new IOException();
 
             ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
-            ServerRequest req = new ServerRequest(GET_ALL_EMAILS);
+            ServerRequest req = new ServerRequest(GET_ALL_EMAILS, SessionData.getInstance().getUserLogged());
             outputStream.writeObject(req);
 
             System.out.println("Get emails from the server");
