@@ -100,7 +100,7 @@ public class EmailActivity implements Runnable {
         }
 
         try {
-            List<Email> emails = (List<Email>) FileUtility.readFileObject("data/mail_new_data" + id);
+            List<Email> emails = (List<Email>) FileUtility.readFileObject("data/mail_data_" + id);
             res.setPayload(emails);
             res.setResponseType(ResponseType.OK);
         }
@@ -113,7 +113,7 @@ public class EmailActivity implements Runnable {
         catch (IOException ex){
             res.setResponseType(ResponseType.LOADING_DATA_ERROR);
             res.setResponseDescription("Error on loading email");
-            serverModel.addLog("Error on reading file: " + "data/mail_new_data" + id + "\n" + ex);
+            serverModel.addLog("Error on reading file: " + "data/mail_data_" + id + "\n" + ex);
             return;
         };
     }
