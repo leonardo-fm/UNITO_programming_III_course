@@ -6,6 +6,7 @@ import com.sharedmodels.ServerResponse;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -18,14 +19,12 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.net.URL;
+import java.util.*;
 
 import static com.sharedmodels.MethodType.SEND_EMAIL;
 
-public class WriteEmailController {
+public class WriteEmailController implements Initializable {
 
     private Stage stage;
     private Scene scene;
@@ -33,15 +32,20 @@ public class WriteEmailController {
 
     @FXML
     private TextField toTextField;
-
     @FXML
     private TextField emailObjectTextField;
-
     @FXML
     private TextArea emailTextArea;
-
     @FXML
     private Label errorLabel;
+
+    @Override
+    public void initialize(URL url, ResourceBundle resourceBundle) {
+        SessionData.getInstance().getCurrentStage().setTitle("Write");
+        SessionData.getInstance().getCurrentStage().setResizable(false);
+
+        errorLabel.setText("");
+    }
 
     public void SetupReply(List<String> receivers) {
         toTextField.setText(String.join(", ", receivers));

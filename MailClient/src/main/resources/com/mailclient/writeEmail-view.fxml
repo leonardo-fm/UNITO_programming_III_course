@@ -1,23 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" prefHeight="500.0" prefWidth="400.0" spacing="20.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mailclient.WriteEmailController">
-    <padding>
-        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-    </padding>
-   <children>
-      <Label fx:id="errorLabel" text="error display" />
-      <Button fx:id="cancelBtn" mnemonicParsing="false" onAction="#onCancelBtnClick" text="Cancel" />
-      <Label text="To" />
-      <TextField fx:id="toTextField" promptText="example@edu.it, asdf@edu.it, ..." text="test@gmail.com" />
-      <TextField fx:id="emailObjectTextField" text="oggettto; ciao" />
-      <TextArea fx:id="emailTextArea" prefHeight="200.0" prefWidth="200.0" text="Default email, HI! :D" />
-      <Button fx:id="sendBtn" mnemonicParsing="false" onAction="#onSendBtnClick" text="Send" />
-   </children>
-</VBox>
+<Pane fx:id="writePane" prefHeight="434.0" prefWidth="365.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mailclient.WriteEmailController">
+    <children>
+        <Label fx:id="errorLabel" disable="true" layoutX="20.0" layoutY="18.0" text="Error string here" textFill="RED" />
+        <Button fx:id="cancelBtn" layoutX="294.0" layoutY="14.0" mnemonicParsing="false" onAction="#onCancelBtnClick" text="Cancel" />
+        <TextField fx:id="toTextField" layoutX="20.0" layoutY="50.0" prefWidth="326.0" promptText="To" text="test@gmail.com">
+         <tooltip>
+            <Tooltip text="To insert more then one receivers, put a coma between the emails. ex@edu.it, rx@edu.it, ...">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Tooltip>
+         </tooltip></TextField>
+        <TextField fx:id="emailObjectTextField" layoutX="20.0" layoutY="84.0" prefHeight="25.0" prefWidth="326.0" promptText="Object" text="oggettto; ciao" />
+        <TextArea fx:id="emailTextArea" layoutX="20.0" layoutY="118.0" prefHeight="263.0" prefWidth="326.0" text="Default email, HI! :D" />
+        <Button fx:id="sendBtn" layoutX="233.0" layoutY="394.0" mnemonicParsing="false" onAction="#onSendBtnClick" prefHeight="25.0" prefWidth="112.0" text="Send" />
+    </children>
+</Pane>

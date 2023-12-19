@@ -42,6 +42,8 @@ public class InboxController implements Initializable {
     @FXML
     private Label username;
     @FXML
+    private Label errorLabel;
+    @FXML
     private ScrollPane inboxHolder;
     @FXML
     private VBox inboxHolderVBox;
@@ -51,6 +53,7 @@ public class InboxController implements Initializable {
         SessionData.getInstance().getCurrentStage().setTitle("Inbox");
         SessionData.getInstance().getCurrentStage().setResizable(false);
 
+        errorLabel.setText("");
         username.setText("Current user: " + SessionData.getInstance().getUserLogged());
         loadAllEmails();
     }
