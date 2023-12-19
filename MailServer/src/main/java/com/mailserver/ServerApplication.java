@@ -8,7 +8,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.List;
 
 public class ServerApplication extends Application {
@@ -27,7 +29,7 @@ public class ServerApplication extends Application {
         stage.show();
 
         ConfigModel config = new ConfigModel(8189);
-        List<String> mailConfigs = FileUtility.readFileLines("Data/emails.txt");
+        List<String> mailConfigs = FileUtility.readFileLines("data/emails.txt");
         for (String mailConfig : mailConfigs){
             String[] mail = mailConfig.split(";");
             config.addMailAddress(mail[0], mail[1]);

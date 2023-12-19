@@ -66,7 +66,7 @@ public class EmailActivity implements Runnable {
         }
 
         // Saving sender email into file
-        if (!saveEmailOnFile(mailAddressId, email)){
+        if (!saveEmailOnFile("mail_data_" + mailAddressId, email)){
             res.setResponseType(ResponseType.SAVING_DATA_ERROR);
             res.setResponseDescription("Error on saving email");
             return;
@@ -75,7 +75,7 @@ public class EmailActivity implements Runnable {
         // Saving email for receivers
         for (String emailAddress : email.getReceivers()){
             String id = config.getMailAddresses().get(emailAddress);
-            if (!saveEmailOnFile(id, email)){
+            if (!saveEmailOnFile("mail_new_data_" + id, email)){
                 res.setResponseType(ResponseType.SAVING_DATA_ERROR);
                 res.setResponseDescription("Error on saving email");
                 return;
@@ -91,27 +91,51 @@ public class EmailActivity implements Runnable {
     private void getAllEmails(ServerRequest req, ServerResponse res){
         String emailAddress = (String) req.getPayload();
         serverModel.addLog("Received request: GET ALL EMAILS from " + socket.getInetAddress() + ':' + socket.getPort());
+        String id = config.getMailAddresses().get(emailAddress);
+        if (id == null) {
+            serverModel.addLog("Invalid request: INVALID MAIL ADDRESS - " + emailAddress);
+            res.setResponseType(ResponseType.INVALID_MAIL_ADDRESS);
+            res.setResponseDescription("Invalid mail address - " + emailAddress);
+            return;
+        }
 
+        try {
+            List<Email> emails = (List<Email>) FileUtility.readFileObject("data/mail_new_data" + id);
+            res.setPayload(emails);
+            res.setResponseType(ResponseType.OK);
+        }
+        catch (ClassNotFoundException ex){
+            res.setResponseType(ResponseType.INVALID_PAYLOAD);
+            res.setResponseDescription("Invalid payload");
+            serverModel.addLog("Error on casting type from file" + ex);
+            return;
+        }
+        catch (IOException ex){
+            res.setResponseType(ResponseType.LOADING_DATA_ERROR);
+            res.setResponseDescription("Error on loading email");
+            serverModel.addLog("Error on reading file: " + "data/mail_new_data" + id + "\n" + ex);
+            return;
+        };
     }
 
-    private boolean saveEmailOnFile(String id, Email email){
+    private boolean saveEmailOnFile(String filename, Email email){
         List<Email> emails;
         try {
-            emails = (List<Email>)FileUtility.readFileObject("Data/mail_data_" + id);
+            emails = (List<Email>)FileUtility.readFileObject("data/" + filename);
         }
         catch (FileNotFoundException ex){
             emails = new ArrayList<>();
         }
         catch (IOException | ClassNotFoundException ex){
-            serverModel.addLog("Error on reading file: " + "Data/mail_data_" + id + "\n" + ex);
+            serverModel.addLog("Error on reading file: " + filename + "\n" + ex);
             return false;
         }
         emails.add(email);
         try {
-            FileUtility.writeFileObject("Data/mail_data_" + id, emails);
+            FileUtility.writeFileObject("data/" + filename, emails);
         }
         catch (IOException ex){
-            serverModel.addLog("Error on writing file: " + "Data/mail_data_" + id + "\n" + ex);
+            serverModel.addLog("Error on writing file: " + filename + "\n" + ex);
             return false;
         }
         return true;
