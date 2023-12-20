@@ -61,7 +61,7 @@ public class ReadEmailController implements Initializable {
 
         ServerResponse serverResponse = new CommunicationHelper().DeleteEmail(currentOpenedEmail.getId());
         if (serverResponse.getResponseType() != ResponseType.OK) {
-            errorLabel.setText("Error while sending the deletion request to the server");
+            errorLabel.setText(serverResponse.getResponseDescription());
             return;
         }
 

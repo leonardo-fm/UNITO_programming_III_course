@@ -1,9 +1,6 @@
 package com.mailclient;
 
-import com.sharedmodels.Email;
-import com.sharedmodels.ResponseType;
-import com.sharedmodels.ServerRequest;
-import com.sharedmodels.ServerResponse;
+import com.sharedmodels.*;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -83,7 +80,7 @@ public class CommunicationHelper {
             if (socket == null) throw new IOException();
 
             ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
-            ServerRequest req = new ServerRequest(GET_NEW_EMAILS);
+            ServerRequest req = new ServerRequest(GET_NEW_EMAILS, SessionData.getInstance().getUserLogged());
             outputStream.writeObject(req);
 
             System.out.println("Get new emails from the server");
@@ -102,7 +99,8 @@ public class CommunicationHelper {
             if (socket == null) throw new IOException();
 
             ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
-            ServerRequest req = new ServerRequest(DELETE_EMAIL, emailUUID);
+            DeleteData deleteData = new DeleteData(emailUUID, SessionData.getInstance().getUserLogged());
+            ServerRequest req = new ServerRequest(DELETE_EMAIL, deleteData);
             outputStream.writeObject(req);
 
             System.out.println("Deleted email on the server");

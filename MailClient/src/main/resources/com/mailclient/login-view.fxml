@@ -13,7 +13,7 @@
          <font>
             <Font size="30.0" />
          </font></Label>
-        <TextField fx:id="usernameTextField" focusTraversable="false" layoutX="25.0" layoutY="82.0" prefHeight="25.0" prefWidth="211.0" promptText="mario.rossi@example.com" text="example@edu.it" />
+        <TextField fx:id="usernameTextField" focusTraversable="false" layoutX="25.0" layoutY="82.0" prefHeight="25.0" prefWidth="211.0" promptText="mario.rossi@example.com" text="example@test.mail" />
         <Button fx:id="loginBtn" layoutX="95.0" layoutY="134.0" mnemonicParsing="false" onAction="#onLoginBtnClick" prefHeight="25.0" prefWidth="71.0" text="Login" />
     </children>
 </Pane>

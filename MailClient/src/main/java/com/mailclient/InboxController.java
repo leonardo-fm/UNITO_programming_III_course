@@ -1,6 +1,8 @@
 package com.mailclient;
 
 import com.sharedmodels.Email;
+import com.sharedmodels.ResponseType;
+import com.sharedmodels.ServerResponse;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -44,22 +46,16 @@ public class InboxController implements Initializable {
     }
 
     private void loadAllEmails() {
-        // TODO remove here!
-        if (!SessionData.getInstance().isInboxLoaded())
-            SessionData.getInstance().setInboxEmails(new CommunicationHelperMock().GetInboxEmailsMock());
-        List<Email> inboxEmails = SessionData.getInstance().getInboxEmails();
-/*
         if (!SessionData.getInstance().isInboxLoaded()) {
             ServerResponse serverResponse = new CommunicationHelper().GetInboxEmails();
             if (serverResponse.getResponseType() != ResponseType.OK) {
-                errorLabel.setText("Error while retrieving the emails from the server");
+                errorLabel.setText(serverResponse.getResponseDescription());
                 return;
             }
 
-            SessionData.getInstance().setInboxEmails((List<Email>) serverResponse.getPayload(););
+            SessionData.getInstance().setInboxEmails((List<Email>) serverResponse.getPayload());
         }
         List<Email> inboxEmails = SessionData.getInstance().getInboxEmails();
-*/
 
         for (Email inboxEmail : inboxEmails) {
             HBox hBox = new HBox();
