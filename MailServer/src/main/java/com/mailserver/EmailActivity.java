@@ -87,15 +87,15 @@ public class EmailActivity implements Runnable {
     }
 
     private void deleteEmail(ServerRequest req, ServerResponse res){
-        Email email = (Email) req.getPayload();
+        DeleteData data = (DeleteData) req.getPayload();
         try {
-            List<Email> emails = (List<Email>) FileUtility.readFileObject("data/mail_data_" + email.getSender());
-            boolean removed = emails.removeIf(searchEmail -> searchEmail.getId() == email.getId());
+            List<Email> emails = (List<Email>) FileUtility.readFileObject("data/mail_data_" + data.getEmailAddress());
+            boolean removed = emails.removeIf(searchEmail -> searchEmail.getId() == data.getId());
             if (!removed){
                 res.setResponseType(ResponseType.NOT_FOUND);
                 return;
             }
-            FileUtility.writeFileObject("data/mail_data_" + email.getSender(), emails);
+            FileUtility.writeFileObject("data/mail_data_" + data.getEmailAddress(), emails);
             res.setResponseType(ResponseType.OK);
         }
         catch (ClassNotFoundException ex){
