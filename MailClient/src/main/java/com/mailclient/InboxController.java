@@ -23,6 +23,7 @@ import javafx.stage.Stage;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -63,7 +64,9 @@ public class InboxController implements Initializable {
                 return;
             }
 
-            SessionData.getInstance().setInboxEmails((List<Email>) serverResponse.getPayload());
+            List<Email> inboxEmails = (List<Email>) serverResponse.getPayload();
+            Collections.reverse(inboxEmails);
+            SessionData.getInstance().setInboxEmails(inboxEmails);
             Utils.Log("loaded emails in the session fetched from the server");
         }
         List<Email> inboxEmails = SessionData.getInstance().getInboxEmails();

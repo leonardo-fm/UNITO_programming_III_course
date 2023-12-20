@@ -74,7 +74,9 @@ public class EmailSynchronizer {
 
             newEmails = (List<Email>) serverResponse.getPayload();
             if (!newEmails.isEmpty()) {
-                SessionData.getInstance().getInboxEmails().addAll(newEmails);
+                for (Email email : newEmails)
+                    SessionData.getInstance().addNewEmailOnTop(email);
+
                 Utils.Log(newEmails.size() + " new emails fetched and added in the inbox");
 
                 final int numberOfNewEmails = newEmails.size();

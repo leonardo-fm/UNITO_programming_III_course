@@ -3,6 +3,7 @@ package com.mailclient;
 import com.sharedmodels.Email;
 import javafx.stage.Stage;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class SessionData {
@@ -45,6 +46,11 @@ public class SessionData {
         this.inboxEmails = inboxEmails;
         isInboxLoaded = true;
         EmailSynchronizer.getInstance().startCheckForNewEmails();
+    }
+    public void addNewEmailOnTop(Email email) {
+        LinkedList<Email> emails = new LinkedList<>(inboxEmails);
+        emails.addFirst(email);
+        inboxEmails = emails;
     }
 
     public boolean isInboxLoaded() {

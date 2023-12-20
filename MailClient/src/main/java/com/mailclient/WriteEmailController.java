@@ -14,6 +14,7 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.UUID;
 
 public class WriteEmailController implements Initializable {
 
@@ -56,7 +57,8 @@ public class WriteEmailController implements Initializable {
             return;
         }
 
-        SessionData.getInstance().getInboxEmails().add(emailToSend);
+        emailToSend.setId((UUID) serverResponse.getPayload());
+        SessionData.getInstance().addNewEmailOnTop(emailToSend);
         Utils.Log("email sent to the server and added to the session inbox");
 
         Utils.loadNewScene("inbox-view.fxml");
