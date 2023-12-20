@@ -34,7 +34,9 @@ public class ServerApplication extends Application {
             String[] mail = mailConfig.split(";");
             config.addMailAddress(mail[0], mail[1]);
         }
-        serverModel.addLog(config.toString());
+
+        serverModel.addLog("Server host port: " + config.getHostPort());
+        serverModel.addLog("Emails supported: " + config.getMailAddresses());
 
         serverThread = new Thread(new ServerActivity(serverModel, config));
         serverThread.setDaemon(true);

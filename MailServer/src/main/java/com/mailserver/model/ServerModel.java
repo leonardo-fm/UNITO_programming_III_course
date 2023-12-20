@@ -3,13 +3,15 @@ package com.mailserver.model;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class ServerModel {
     public ServerModel() {
         this.setLog("");
     }
 
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss.S");
     private final StringProperty log = new SimpleStringProperty();
     public final StringProperty logProperty() {
         return this.log;
@@ -23,7 +25,7 @@ public class ServerModel {
         this.logProperty().set(log);
     }
     public final void addLog(String log){
-        String newLog = new Date() + " - " + this.getLog() + log + "\n";
+        String newLog = this.getLog() + LocalDateTime.now().format(formatter) + " - " + log + "\n";
         this.setLog(newLog);
     }
 }
