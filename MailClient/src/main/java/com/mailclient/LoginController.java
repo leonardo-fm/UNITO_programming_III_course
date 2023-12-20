@@ -40,7 +40,7 @@ public class LoginController implements Initializable {
 
         ServerResponse serverResponse = new CommunicationHelper().checkSupportedEmailAddress(emailAddress);
         if (serverResponse.getResponseType() != ResponseType.OK) {
-            errorLabel.setText("The username is not in the list of valid email addresses!");
+            errorLabel.setText(serverResponse.getResponseDescription());
             return;
         }
 

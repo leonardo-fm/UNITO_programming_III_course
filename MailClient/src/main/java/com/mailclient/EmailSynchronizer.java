@@ -30,14 +30,15 @@ public class EmailSynchronizer {
 
     public void startCheckForNewEmails() {
         startSync = true;
-        Thread t1 = new Thread(() -> {
+        Thread syncThread = new Thread(() -> {
             try {
                 syncEmails();
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
         });
-        t1.start();
+        syncThread.setDaemon(true);
+        syncThread.start();
     }
 
     public void stopCheckForNewEmails() {
