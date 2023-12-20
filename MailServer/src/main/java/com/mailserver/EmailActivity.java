@@ -34,6 +34,8 @@ public class EmailActivity implements Runnable {
                 case SEND_EMAIL -> sendEmail(req, res);
                 case DELETE_EMAIL -> deleteEmail(req, res);
                 case GET_ALL_EMAILS -> getAllEmails(req, res);
+                case GET_NEW_EMAILS -> getNewEmails(req, res);
+                case CHECK_SUPPORTED_EMAIL_ADDRESS -> checkSupportedEmailAddress(req, res);
             }
             ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
             out.writeObject(res);
@@ -116,6 +118,49 @@ public class EmailActivity implements Runnable {
             serverModel.addLog("Error on reading file: " + "data/mail_data_" + id + "\n" + ex);
             return;
         };
+    }
+    private void getNewEmails(ServerRequest req, ServerResponse res){
+        String emailAddress = (String) req.getPayload();
+        serverModel.addLog("Received request: GET NEW EMAILS from " + socket.getInetAddress() + ':' + socket.getPort());
+        String id = config.getMailAddresses().get(emailAddress);
+        if (id == null) {
+            serverModel.addLog("Invalid request: INVALID MAIL ADDRESS - " + emailAddress);
+            res.setResponseType(ResponseType.INVALID_MAIL_ADDRESS);
+            res.setResponseDescription("Invalid mail address - " + emailAddress);
+            return;
+        }
+
+        try {
+            List<Email> emails = (List<Email>) FileUtility.readFileObject("data/mail_new_data_" + id);
+            List<Email> oldEmails = (List<Email>) FileUtility.readFileObject("data/mail_data_" + id);
+            oldEmails.addAll(emails);
+            FileUtility.writeFileObject("data/mail_data_" + id, oldEmails);
+            FileUtility.writeFileObject("data/mail_new_data_" + id, new ArrayList<Email>());
+
+            res.setPayload(emails);
+            res.setResponseType(ResponseType.OK);
+        }
+        catch (ClassNotFoundException ex){
+            res.setResponseType(ResponseType.ERROR);
+            serverModel.addLog("Error on casting type from file" + ex);
+            return;
+        }
+        catch (IOException ex){
+            res.setResponseType(ResponseType.LOADING_DATA_ERROR);
+            res.setResponseDescription("Error on loading email");
+            serverModel.addLog("Error on reading file: " + ex);
+            return;
+        };
+    }
+    private void checkSupportedEmailAddress(ServerRequest req, ServerResponse res){
+        String emailAddress = (String) req.getPayload();
+        serverModel.addLog("Received request: CHECK SUPPORTED EMAIL ADDRESS from " + socket.getInetAddress() + ':' + socket.getPort());
+        String id = config.getMailAddresses().get(emailAddress);
+        if (id == null) {
+            res.setResponseType(ResponseType.INVALID_MAIL_ADDRESS);
+            return;
+        }
+        res.setResponseType(ResponseType.OK);
     }
 
     private boolean saveEmailOnFile(String filename, Email email){
