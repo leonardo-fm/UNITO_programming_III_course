@@ -12,7 +12,7 @@
     <children>
         <Label fx:id="errorLabel" disable="true" layoutX="20.0" layoutY="18.0" text="Error string here" textFill="RED" />
         <Button fx:id="cancelBtn" layoutX="294.0" layoutY="14.0" mnemonicParsing="false" onAction="#onCancelBtnClick" text="Cancel" />
-        <TextField fx:id="toTextField" layoutX="20.0" layoutY="50.0" prefWidth="326.0" promptText="To" text="test@gmail.com">
+        <TextField fx:id="toTextField" layoutX="20.0" layoutY="50.0" prefWidth="326.0" promptText="To" text="example@test1.mail">
          <tooltip>
             <Tooltip text="To insert more then one receivers, put a coma between the emails. ex@edu.it, rx@edu.it, ...">
                <font>
