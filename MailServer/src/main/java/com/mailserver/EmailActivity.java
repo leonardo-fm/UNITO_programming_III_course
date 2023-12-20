@@ -12,6 +12,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class EmailActivity implements Runnable {
 
@@ -46,7 +47,6 @@ public class EmailActivity implements Runnable {
 
     private void sendEmail(ServerRequest req, ServerResponse res){
         Email email = (Email) req.getPayload();
-        System.out.println(email);
         serverModel.addLog("Received request: SEND EMAIL from " + socket.getInetAddress() + ':' + socket.getPort());
 
         // Searching for not existing email address
@@ -87,7 +87,29 @@ public class EmailActivity implements Runnable {
     }
 
     private void deleteEmail(ServerRequest req, ServerResponse res){
-        System.out.println("DELETE EMAIL");
+        DeleteData data = (DeleteData) req.getPayload();
+        try {
+            List<Email> emails = (List<Email>) FileUtility.readFileObject("data/mail_data_" + data.getEmailAddress());
+            boolean removed = emails.removeIf(searchEmail -> searchEmail.getId() == data.getId());
+            if (!removed){
+                res.setResponseType(ResponseType.NOT_FOUND);
+                return;
+            }
+            FileUtility.writeFileObject("data/mail_data_" + data.getEmailAddress(), emails);
+            res.setResponseType(ResponseType.OK);
+        }
+        catch (ClassNotFoundException ex){
+            res.setResponseType(ResponseType.INVALID_PAYLOAD);
+            res.setResponseDescription("Invalid payload");
+            serverModel.addLog("Error on casting type from file" + ex);
+            return;
+        }
+        catch (IOException ex){
+            res.setResponseType(ResponseType.LOADING_DATA_ERROR);
+            res.setResponseDescription("Error on loading email");
+            serverModel.addLog("Error on reading file: " + ex);
+            return;
+        };
     }
 
     private void getAllEmails(ServerRequest req, ServerResponse res){

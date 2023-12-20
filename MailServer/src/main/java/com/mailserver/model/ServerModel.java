@@ -3,6 +3,8 @@ package com.mailserver.model;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
+import java.util.Date;
+
 public class ServerModel {
     public ServerModel() {
         this.setLog("");
@@ -21,7 +23,7 @@ public class ServerModel {
         this.logProperty().set(log);
     }
     public final void addLog(String log){
-        String newLog = this.getLog() + log + "\n";
+        String newLog = new Date() + " - " + this.getLog() + log + "\n";
         this.setLog(newLog);
     }
 }

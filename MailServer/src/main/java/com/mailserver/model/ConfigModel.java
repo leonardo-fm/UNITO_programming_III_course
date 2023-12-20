@@ -30,7 +30,7 @@ public class ConfigModel {
 
     @Override
     public String toString() {
-        return "Server host port: " + this.getHostPort() + "\n" +
+        return "Server host port: " + this.getHostPort() + " " +
                 "Emails supported: " + this.getMailAddresses();
     }
 }
