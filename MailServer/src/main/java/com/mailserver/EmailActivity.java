@@ -113,7 +113,10 @@ public class EmailActivity implements Runnable {
 
         try {
             List<Email> emails = (List<Email>) FileUtility.readFileObject("data/mail_data_" + mailAddressId);
-            boolean removed = emails.removeIf(searchEmail -> searchEmail.getId() == reqData.getId());
+            System.out.println("Id to remove: " + reqData.getId());
+            System.out.println("Before: " + emails);
+            boolean removed = emails.removeIf(searchEmail -> searchEmail.getId().compareTo(reqData.getId()) == 0);
+            System.out.println("After: " + emails);
             if (!removed){
                 res.setResponseType(ResponseType.NOT_FOUND);
                 return;
