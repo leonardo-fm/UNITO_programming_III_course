@@ -1,6 +1,8 @@
 package com.mailserver.controller;
 
 import com.mailserver.model.ServerModel;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.scene.control.TextArea;
 
@@ -17,6 +19,13 @@ public class ServerController {
             throw new IllegalStateException("Model cannot be null");
         this.model = model;
 
-        this.logTextArea.textProperty().bind(this.model.logProperty());
+        logTextArea.textProperty().bind(this.model.logProperty());
+        // Automatic scroll to bottom when text change
+        model.logProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue<? extends String> observable, String oldValue, String newValue) {
+                logTextArea.setScrollTop(Double.MAX_VALUE);
+            }
+        });
     }
 }
