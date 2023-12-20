@@ -5,7 +5,7 @@
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.Pane?>
 
-<Pane fx:id="readPane" prefHeight="434.0" prefWidth="365.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mailclient.ReadEmailController">
+<Pane fx:id="readPane" prefHeight="434.0" prefWidth="365.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mailclient.ReadEmailController">
    <children>
       <Label fx:id="errorLabel" disable="true" layoutX="12.0" layoutY="18.0" text="Error string here" textFill="RED" />
       <TextArea fx:id="emailTextArea" editable="false" focusTraversable="false" layoutX="14.0" layoutY="53.0" prefHeight="328.0" prefWidth="337.0" wrapText="true" />

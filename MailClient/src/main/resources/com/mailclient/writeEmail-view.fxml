@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<Pane fx:id="writePane" prefHeight="434.0" prefWidth="365.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mailclient.WriteEmailController">
+<Pane fx:id="writePane" prefHeight="434.0" prefWidth="365.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mailclient.WriteEmailController">
     <children>
         <Label fx:id="errorLabel" disable="true" layoutX="20.0" layoutY="18.0" text="Error string here" textFill="RED" />
         <Button fx:id="cancelBtn" layoutX="294.0" layoutY="14.0" mnemonicParsing="false" onAction="#onCancelBtnClick" text="Cancel" />

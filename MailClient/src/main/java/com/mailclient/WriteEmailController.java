@@ -34,7 +34,7 @@ public class WriteEmailController implements Initializable {
         errorLabel.setText("");
     }
 
-    public void SetupReply(List<String> receivers) {
+    public void setupReply(List<String> receivers) {
         toTextField.setText(String.join(", ", receivers));
     }
 
@@ -57,6 +57,8 @@ public class WriteEmailController implements Initializable {
         }
 
         SessionData.getInstance().getInboxEmails().add(emailToSend);
+        Utils.Log("email sent to the server and added to the session inbox");
+
         Utils.loadNewScene("inbox-view.fxml");
     }
 

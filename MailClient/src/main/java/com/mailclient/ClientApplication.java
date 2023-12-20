@@ -27,6 +27,8 @@ public class ClientApplication extends Application {
         Scene scene = new Scene(root);
         stage.setScene(scene);
         stage.show();
+
+        Utils.Log("application started successfully");
     }
 
     public static void main(String[] args) {

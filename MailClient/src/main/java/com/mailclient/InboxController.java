@@ -3,6 +3,7 @@ package com.mailclient;
 import com.sharedmodels.Email;
 import com.sharedmodels.ResponseType;
 import com.sharedmodels.ServerResponse;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -19,6 +20,7 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
@@ -45,6 +47,14 @@ public class InboxController implements Initializable {
         loadAllEmails();
     }
 
+    public void reloadInbox() {
+        try {
+            Utils.loadNewScene("inbox-view.fxml");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private void loadAllEmails() {
         if (!SessionData.getInstance().isInboxLoaded()) {
             ServerResponse serverResponse = new CommunicationHelper().GetInboxEmails();
@@ -54,6 +64,7 @@ public class InboxController implements Initializable {
             }
 
             SessionData.getInstance().setInboxEmails((List<Email>) serverResponse.getPayload());
+            Utils.Log("loaded emails in the session fetched from the server");
         }
         List<Email> inboxEmails = SessionData.getInstance().getInboxEmails();
 
@@ -77,6 +88,8 @@ public class InboxController implements Initializable {
             hBox.getChildren().add(emailPreview);
             inboxHolderVBox.getChildren().add(hBox);
         }
+
+        Utils.Log("loaded all emails in the inbox");
     }
 
     private Button generateButton(Email email) {
@@ -87,7 +100,7 @@ public class InboxController implements Initializable {
                 Parent root = fxmlLoader.load();
 
                 ReadEmailController readEmailController = fxmlLoader.getController();
-                readEmailController.Setup(email);
+                readEmailController.setup(email);
 
                 Scene scene = new Scene(root);
 
@@ -109,6 +122,7 @@ public class InboxController implements Initializable {
 
     @FXML
     protected void onLogoutBtnClick() throws IOException {
+        Utils.Log("user " + SessionData.getInstance().getUserLogged() + " logged out");
         Utils.loadNewScene("login-view.fxml");
     }
 }

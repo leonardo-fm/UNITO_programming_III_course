@@ -45,6 +45,7 @@ public class LoginController implements Initializable {
         }
 
         SessionData.getInstance().setUserLogged(emailAddress);
+        Utils.Log("user " + emailAddress + " logged in");
 
         Utils.loadNewScene("inbox-view.fxml");
     }

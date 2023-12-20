@@ -10,14 +10,18 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class ReadEmailController implements Initializable {
 
+    private final SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss.S");
     private Scene scene;
     private Parent root;
     private Email currentOpenedEmail;
@@ -35,9 +39,9 @@ public class ReadEmailController implements Initializable {
         errorLabel.setText("");
     }
 
-    public void Setup(Email email) {
+    public void setup(Email email) {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(email.getMailDate().toString() + "\n");
+        stringBuilder.append(formatter.format(email.getMailDate()) + "\n");
         stringBuilder.append("From: " + email.getSender() + "\n");
         stringBuilder.append("To: " + String.join(", ", email.getReceivers()) + "\n");
         stringBuilder.append("Object: " + email.getMailObject() + "\n");
@@ -50,6 +54,7 @@ public class ReadEmailController implements Initializable {
 
     @FXML
     protected void onCancelBtnClick() throws IOException {
+        // TODO switch window to reload
         Utils.loadNewScene("inbox-view.fxml");
     }
 
@@ -64,6 +69,9 @@ public class ReadEmailController implements Initializable {
             errorLabel.setText(serverResponse.getResponseDescription());
             return;
         }
+
+        SessionData.getInstance().getInboxEmails().remove(currentOpenedEmail);
+        Utils.Log("successfully deleted and removed from session email " + currentOpenedEmail.getId().toString());
 
         Utils.loadNewScene("inbox-view.fxml");
     }
@@ -80,11 +88,13 @@ public class ReadEmailController implements Initializable {
             if (!isEmailDataCorrect(forwardTo)) return;
             errorLabel.setText("");
 
-            ServerResponse serverResponse = new CommunicationHelper().SendEmail(GenerateForwardEmail(forwardTo));
+            ServerResponse serverResponse = new CommunicationHelper().SendEmail(generateForwardEmail(forwardTo));
             if (serverResponse.getResponseType() != ResponseType.OK) {
                 errorLabel.setText("Error while forwarding the email request to the server");
                 return;
             }
+
+            Utils.Log("successfully forwarded email");
 
             try {
                 Utils.loadNewScene("inbox-view.fxml");
@@ -106,7 +116,7 @@ public class ReadEmailController implements Initializable {
         return true;
     }
 
-    private Email GenerateForwardEmail(String forwardTo) {
+    private Email generateForwardEmail(String forwardTo) {
         String sender = SessionData.getInstance().getUserLogged();
         List<String> receivers = Arrays.stream(forwardTo.replaceAll("\\s+", "").split(",", -1)).toList();
         String emailObject = currentOpenedEmail.getMailObject();
@@ -126,7 +136,7 @@ public class ReadEmailController implements Initializable {
         WriteEmailController writeEmailController = fxmlLoader.getController();
         List<String> replyTo = new ArrayList<>();
         replyTo.add(currentOpenedEmail.getSender());
-        writeEmailController.SetupReply(replyTo);
+        writeEmailController.setupReply(replyTo);
 
         scene = new Scene(root);
         Stage currentStage = SessionData.getInstance().getCurrentStage();
@@ -148,7 +158,7 @@ public class ReadEmailController implements Initializable {
         replyTo.add(currentOpenedEmail.getSender());
         replyTo.addAll(currentOpenedEmail.getReceivers());
         replyTo.remove(SessionData.getInstance().getUserLogged());
-        writeEmailController.SetupReply(replyTo);
+        writeEmailController.setupReply(replyTo);
 
         scene = new Scene(root);
         Stage currentStage = SessionData.getInstance().getCurrentStage();

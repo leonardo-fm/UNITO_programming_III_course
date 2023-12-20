@@ -6,7 +6,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.VBox?>
 
-<Pane fx:id="inboxPane" prefHeight="488.0" prefWidth="625.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mailclient.InboxController">
+<Pane fx:id="inboxPane" prefHeight="488.0" prefWidth="625.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.mailclient.InboxController">
     <children>
         <Label fx:id="errorLabel" disable="true" layoutX="14.0" layoutY="453.0" text="Error string here" textFill="RED" />
         <Label fx:id="username" layoutX="16.0" layoutY="25.0" text="Current user: user@gmail.com" />

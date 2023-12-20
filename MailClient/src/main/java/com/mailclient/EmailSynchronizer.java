@@ -3,9 +3,20 @@ package com.mailclient;
 import com.sharedmodels.Email;
 import com.sharedmodels.ResponseType;
 import com.sharedmodels.ServerResponse;
+import javafx.application.Platform;
+import javafx.event.Event;
+import javafx.event.EventType;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.stage.Stage;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 public class EmailSynchronizer {
@@ -15,7 +26,6 @@ public class EmailSynchronizer {
     private final int defaultMaxIncreaseTime = 5;
     private long timeBetweenChecks;
     private int maxIncreaseTime = 5;
-
 
 
     private static EmailSynchronizer instance;
@@ -65,8 +75,26 @@ public class EmailSynchronizer {
             newEmails = (List<Email>) serverResponse.getPayload();
             if (!newEmails.isEmpty()) {
                 SessionData.getInstance().getInboxEmails().addAll(newEmails);
-                Alert alert = new Alert(Alert.AlertType.INFORMATION, newEmails.size() + " new email arrived!", ButtonType.OK);
-                alert.showAndWait();
+                Utils.Log(newEmails.size() + " new emails fetched and added in the inbox");
+
+                final int numberOfNewEmails = newEmails.size();
+                Platform.runLater(() -> {
+                    try {
+                        URL loadedView = getClass().getResource("inbox-view.fxml");
+                        if (loadedView == null)
+                            throw new FileNotFoundException("Write page not found!");
+
+                        FXMLLoader fxmlLoader = new FXMLLoader(loadedView);
+                        fxmlLoader.load();
+                        InboxController inboxController = fxmlLoader.getController();
+                        inboxController.reloadInbox();
+
+                        Alert alert = new Alert(Alert.AlertType.INFORMATION, numberOfNewEmails + " new email arrived!", ButtonType.OK);
+                        alert.showAndWait();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                });
             }
         }
     }

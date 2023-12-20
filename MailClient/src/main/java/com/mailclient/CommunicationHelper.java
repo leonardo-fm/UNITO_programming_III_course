@@ -30,8 +30,6 @@ public class CommunicationHelper {
             ServerRequest req = new ServerRequest(SEND_EMAIL, email);
             outputStream.writeObject(req);
 
-            System.out.println("Sent email to the server");
-
             ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
             return (ServerResponse) inputStream.readObject();
         } catch (IOException | ClassNotFoundException e) {
@@ -47,8 +45,6 @@ public class CommunicationHelper {
             ServerRequest req = new ServerRequest(CHECK_SUPPORTED_EMAIL_ADDRESS, emailAddress);
             outputStream.writeObject(req);
 
-            System.out.println("Sent check for email address to the server");
-
             ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
             return (ServerResponse) inputStream.readObject();
         } catch (IOException | ClassNotFoundException e) {
@@ -63,8 +59,6 @@ public class CommunicationHelper {
             ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
             ServerRequest req = new ServerRequest(GET_ALL_EMAILS, SessionData.getInstance().getUserLogged());
             outputStream.writeObject(req);
-
-            System.out.println("Get emails from the server");
 
             ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
             ServerResponse serverResponse = (ServerResponse) inputStream.readObject();
@@ -83,8 +77,6 @@ public class CommunicationHelper {
             ServerRequest req = new ServerRequest(GET_NEW_EMAILS, SessionData.getInstance().getUserLogged());
             outputStream.writeObject(req);
 
-            System.out.println("Get new emails from the server");
-
             ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
             ServerResponse serverResponse = (ServerResponse) inputStream.readObject();
 
@@ -102,8 +94,6 @@ public class CommunicationHelper {
             DeleteData deleteData = new DeleteData(emailUUID, SessionData.getInstance().getUserLogged());
             ServerRequest req = new ServerRequest(DELETE_EMAIL, deleteData);
             outputStream.writeObject(req);
-
-            System.out.println("Deleted email on the server");
 
             ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
             return (ServerResponse) inputStream.readObject();

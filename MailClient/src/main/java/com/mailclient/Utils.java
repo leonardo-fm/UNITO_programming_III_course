@@ -8,10 +8,14 @@ import javafx.stage.Stage;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Utils {
+
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss.S");
 
     public static final Pattern VALID_EMAIL_ADDRESS_REGEX =
             Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
@@ -32,5 +36,9 @@ public class Utils {
         Stage currentStage = SessionData.getInstance().getCurrentStage();
         currentStage.setScene(scene);
         currentStage.show();
+    }
+
+    public static void Log(String log) {
+        System.out.println("[" + LocalDateTime.now().format(formatter) + "] - " + log);
     }
 }
