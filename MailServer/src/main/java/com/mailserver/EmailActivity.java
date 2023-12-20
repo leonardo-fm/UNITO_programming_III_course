@@ -46,23 +46,30 @@ public class EmailActivity implements Runnable {
     }
 
     private void sendEmail(ServerRequest req, ServerResponse res){
-        Email email = (Email) req.getPayload();
-        serverModel.addLog("Received request: SEND EMAIL from " + socket.getInetAddress() + ':' + socket.getPort());
+        serverModel.addLog("Received request: " + MethodType.SEND_EMAIL + " from " + socket.getInetAddress() + ':' + socket.getPort());
+        Email email;
+        try {
+            email = (Email) req.getPayload();
+        }
+        catch (ClassCastException ex){
+            res.setResponseType(ResponseType.INVALID_PAYLOAD);
+            serverModel.addLog("Request error:" + ResponseType.INVALID_PAYLOAD);
+            serverModel.addLog(ex.toString());
+            return;
+        }
 
         // Searching for not existing email address
         String mailAddressId = config.getMailAddresses().get(email.getSender());
         if (mailAddressId == null){
-            serverModel.addLog("Invalid request: INVALID SENDER MAIL ADDRESS of " + email.getSender());
             res.setResponseType(ResponseType.INVALID_SENDER_MAIL_ADDRESS);
-            res.setResponseDescription("INVALID SENDER MAIL ADDRESS of " + email.getSender());
+            serverModel.addLog("Request error: " + ResponseType.INVALID_SENDER_MAIL_ADDRESS + " for " + email.getSender());
             return;
         }
         for (String emailAddress : email.getReceivers()) {
             String id = config.getMailAddresses().get(emailAddress);
-            if (id == null) {
-                serverModel.addLog("Invalid request: INVALID RECEIVER MAIL ADDRESS - " + emailAddress);
+            if (id == null){
                 res.setResponseType(ResponseType.INVALID_RECEIVER_MAIL_ADDRESS);
-                res.setResponseDescription("INVALID RECEIVER MAIL ADDRESS - " + emailAddress);
+                serverModel.addLog("Request error: " + ResponseType.INVALID_RECEIVER_MAIL_ADDRESS + " for " + emailAddress);
                 return;
             }
         }
@@ -70,7 +77,6 @@ public class EmailActivity implements Runnable {
         // Saving sender email into file
         if (!saveEmailOnFile("mail_data_" + mailAddressId, email)){
             res.setResponseType(ResponseType.SAVING_DATA_ERROR);
-            res.setResponseDescription("Error on saving email");
             return;
         }
 
@@ -79,7 +85,6 @@ public class EmailActivity implements Runnable {
             String id = config.getMailAddresses().get(emailAddress);
             if (!saveEmailOnFile("mail_new_data_" + id, email)){
                 res.setResponseType(ResponseType.SAVING_DATA_ERROR);
-                res.setResponseDescription("Error on saving email");
                 return;
             }
         }
@@ -87,96 +92,147 @@ public class EmailActivity implements Runnable {
     }
 
     private void deleteEmail(ServerRequest req, ServerResponse res){
-        DeleteData data = (DeleteData) req.getPayload();
+        serverModel.addLog("Received request: " + MethodType.DELETE_EMAIL + " from " + socket.getInetAddress() + ':' + socket.getPort());
+        DeleteData reqData;
         try {
-            List<Email> emails = (List<Email>) FileUtility.readFileObject("data/mail_data_" + data.getEmailAddress());
-            boolean removed = emails.removeIf(searchEmail -> searchEmail.getId() == data.getId());
+            reqData = (DeleteData) req.getPayload();
+        }
+        catch (ClassCastException ex){
+            res.setResponseType(ResponseType.INVALID_PAYLOAD);
+            serverModel.addLog("Request error:" + ResponseType.INVALID_PAYLOAD);
+            serverModel.addLog(ex.toString());
+            return;
+        }
+
+        String mailAddressId = config.getMailAddresses().get(reqData.getEmailAddress());
+        if (mailAddressId == null){
+            res.setResponseType(ResponseType.INVALID_MAIL_ADDRESS);
+            serverModel.addLog("Request error: " + ResponseType.INVALID_MAIL_ADDRESS + " for " + reqData.getEmailAddress());
+            return;
+        }
+
+        try {
+            List<Email> emails = (List<Email>) FileUtility.readFileObject("data/mail_data_" + mailAddressId);
+            boolean removed = emails.removeIf(searchEmail -> searchEmail.getId() == reqData.getId());
             if (!removed){
                 res.setResponseType(ResponseType.NOT_FOUND);
                 return;
             }
-            FileUtility.writeFileObject("data/mail_data_" + data.getEmailAddress(), emails);
+            FileUtility.writeFileObject("data/mail_data_" + mailAddressId, emails);
             res.setResponseType(ResponseType.OK);
         }
-        catch (ClassNotFoundException ex){
-            res.setResponseType(ResponseType.INVALID_PAYLOAD);
-            res.setResponseDescription("Invalid payload");
-            serverModel.addLog("Error on casting type from file" + ex);
-            return;
+        catch (IOException | ClassNotFoundException ex){
+            res.setResponseType(ResponseType.ERROR);
+            serverModel.addLog("Server error: " + ex);
         }
-        catch (IOException ex){
-            res.setResponseType(ResponseType.LOADING_DATA_ERROR);
-            res.setResponseDescription("Error on loading email");
-            serverModel.addLog("Error on reading file: " + ex);
-            return;
-        };
     }
 
     private void getAllEmails(ServerRequest req, ServerResponse res){
-        String emailAddress = (String) req.getPayload();
-        serverModel.addLog("Received request: GET ALL EMAILS from " + socket.getInetAddress() + ':' + socket.getPort());
-        String id = config.getMailAddresses().get(emailAddress);
-        if (id == null) {
-            serverModel.addLog("Invalid request: INVALID MAIL ADDRESS - " + emailAddress);
+        serverModel.addLog("Received request: " + MethodType.GET_ALL_EMAILS + " from " + socket.getInetAddress() + ':' + socket.getPort());
+        String emailAddress;
+        try {
+            emailAddress = (String) req.getPayload();
+        }
+        catch (ClassCastException ex){
+            res.setResponseType(ResponseType.INVALID_PAYLOAD);
+            serverModel.addLog("Request error:" + ResponseType.INVALID_PAYLOAD);
+            serverModel.addLog(ex.toString());
+            return;
+        }
+
+        String mailAddressId = config.getMailAddresses().get(emailAddress);
+        if (mailAddressId == null){
             res.setResponseType(ResponseType.INVALID_MAIL_ADDRESS);
-            res.setResponseDescription("Invalid mail address - " + emailAddress);
+            serverModel.addLog("Request error: " + ResponseType.INVALID_MAIL_ADDRESS + " for " + emailAddress);
             return;
         }
 
         try {
-            List<Email> emails = (List<Email>) FileUtility.readFileObject("data/mail_data_" + id);
+            List<Email> emails = (List<Email>) FileUtility.readFileObject("data/mail_data_" + mailAddressId);
             res.setPayload(emails);
             res.setResponseType(ResponseType.OK);
         }
-        catch (ClassNotFoundException ex){
-            res.setResponseType(ResponseType.INVALID_PAYLOAD);
-            res.setResponseDescription("Invalid payload");
-            serverModel.addLog("Error on casting type from file" + ex);
-            return;
+        catch (FileNotFoundException ex){
+            res.setPayload(new ArrayList<Email>());
+            res.setResponseType(ResponseType.OK);
         }
-        catch (IOException ex){
-            res.setResponseType(ResponseType.LOADING_DATA_ERROR);
-            res.setResponseDescription("Error on loading email");
-            serverModel.addLog("Error on reading file: " + "data/mail_data_" + id + "\n" + ex);
-            return;
-        };
+        catch (IOException | ClassNotFoundException ex){
+            res.setResponseType(ResponseType.ERROR);
+            serverModel.addLog("Server error: " + ex);
+        }
     }
     private void getNewEmails(ServerRequest req, ServerResponse res){
-        String emailAddress = (String) req.getPayload();
-        serverModel.addLog("Received request: GET NEW EMAILS from " + socket.getInetAddress() + ':' + socket.getPort());
-        String id = config.getMailAddresses().get(emailAddress);
-        if (id == null) {
-            serverModel.addLog("Invalid request: INVALID MAIL ADDRESS - " + emailAddress);
-            res.setResponseType(ResponseType.INVALID_MAIL_ADDRESS);
-            res.setResponseDescription("Invalid mail address - " + emailAddress);
+        serverModel.addLog("Received request: " + MethodType.GET_NEW_EMAILS + " from " + socket.getInetAddress() + ':' + socket.getPort());
+        String emailAddress;
+        try {
+            emailAddress = (String) req.getPayload();
+        }
+        catch (ClassCastException ex){
+            res.setResponseType(ResponseType.INVALID_PAYLOAD);
+            serverModel.addLog("Request error:" + ResponseType.INVALID_PAYLOAD);
+            serverModel.addLog(ex.toString());
             return;
         }
 
-        try {
-            List<Email> emails = (List<Email>) FileUtility.readFileObject("data/mail_new_data_" + id);
-            List<Email> oldEmails = (List<Email>) FileUtility.readFileObject("data/mail_data_" + id);
-            oldEmails.addAll(emails);
-            FileUtility.writeFileObject("data/mail_data_" + id, oldEmails);
-            FileUtility.writeFileObject("data/mail_new_data_" + id, new ArrayList<Email>());
+        String mailAddressId = config.getMailAddresses().get(emailAddress);
+        if (mailAddressId == null){
+            res.setResponseType(ResponseType.INVALID_MAIL_ADDRESS);
+            serverModel.addLog("Request error: " + ResponseType.INVALID_MAIL_ADDRESS + " for " + emailAddress);
+            return;
+        }
 
-            res.setPayload(emails);
+        List<Email> oldEmails;
+        try {
+            oldEmails = (List<Email>) FileUtility.readFileObject("data/mail_data_" + mailAddressId);
+        }
+        catch (FileNotFoundException ex){
+            oldEmails = new ArrayList<>();
+        }
+        catch (IOException | ClassNotFoundException ex){
+            res.setResponseType(ResponseType.ERROR);
+            serverModel.addLog("Server error: " + ex);
+            return;
+        }
+
+        List<Email> newEmails;
+        try {
+            newEmails = (List<Email>) FileUtility.readFileObject("data/mail_new_data_" + mailAddressId);
+        }
+        catch (FileNotFoundException ex){
+            newEmails = new ArrayList<>();
+        }
+        catch (IOException | ClassNotFoundException ex){
+            res.setResponseType(ResponseType.ERROR);
+            serverModel.addLog("Server error: " + ex);
+            return;
+        }
+
+        oldEmails.addAll(newEmails);
+        try {
+            FileUtility.writeFileObject("data/mail_data_" + mailAddressId, oldEmails);
+            FileUtility.writeFileObject("data/mail_new_data_" + mailAddressId, new ArrayList<Email>());
+
+            res.setPayload(newEmails);
             res.setResponseType(ResponseType.OK);
         }
-        catch (ClassNotFoundException ex){
-            res.setResponseType(ResponseType.ERROR);
-            serverModel.addLog("Error on casting type from file" + ex);
-            return;
-        }
         catch (IOException ex){
-            res.setResponseType(ResponseType.LOADING_DATA_ERROR);
-            res.setResponseDescription("Error on loading email");
-            serverModel.addLog("Error on reading file: " + ex);
-            return;
-        };
+            res.setResponseType(ResponseType.ERROR);
+            serverModel.addLog("Server error: " + ex);
+        }
     }
     private void checkSupportedEmailAddress(ServerRequest req, ServerResponse res){
-        String emailAddress = (String) req.getPayload();
-        serverModel.addLog("Received request: CHECK SUPPORTED EMAIL ADDRESS from " + socket.getInetAddress() + ':' + socket.getPort());
+        serverModel.addLog("Received request: " + MethodType.CHECK_SUPPORTED_EMAIL_ADDRESS + " from " + socket.getInetAddress() + ':' + socket.getPort());
+        String emailAddress;
+        try {
+            emailAddress = (String) req.getPayload();
+        }
+        catch (ClassCastException ex){
+            res.setResponseType(ResponseType.INVALID_PAYLOAD);
+            serverModel.addLog("Request error:" + ResponseType.INVALID_PAYLOAD);
+            serverModel.addLog(ex.toString());
+            return;
+        }
+
         String id = config.getMailAddresses().get(emailAddress);
         if (id == null) {
             res.setResponseType(ResponseType.INVALID_MAIL_ADDRESS);
@@ -194,7 +250,8 @@ public class EmailActivity implements Runnable {
             emails = new ArrayList<>();
         }
         catch (IOException | ClassNotFoundException ex){
-            serverModel.addLog("Error on reading file: " + filename + "\n" + ex);
+            serverModel.addLog("Error on reading file: " + filename);
+            serverModel.addLog(ex.toString());
             return false;
         }
         emails.add(email);
@@ -202,7 +259,8 @@ public class EmailActivity implements Runnable {
             FileUtility.writeFileObject("data/" + filename, emails);
         }
         catch (IOException ex){
-            serverModel.addLog("Error on writing file: " + filename + "\n" + ex);
+            serverModel.addLog("Error on writing file: " + filename);
+            serverModel.addLog(ex.toString());
             return false;
         }
         return true;
