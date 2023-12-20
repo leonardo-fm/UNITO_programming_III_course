@@ -60,9 +60,9 @@ public class EmailActivity implements Runnable {
         for (String emailAddress : email.getReceivers()) {
             String id = config.getMailAddresses().get(emailAddress);
             if (id == null) {
-                serverModel.addLog("Invalid request: INVALID RECEIVER MAIL ADDRESS - " + email.getSender());
+                serverModel.addLog("Invalid request: INVALID RECEIVER MAIL ADDRESS - " + emailAddress);
                 res.setResponseType(ResponseType.INVALID_RECEIVER_MAIL_ADDRESS);
-                res.setResponseDescription("INVALID RECEIVER MAIL ADDRESS - " + email.getSender());
+                res.setResponseDescription("INVALID RECEIVER MAIL ADDRESS - " + emailAddress);
                 return;
             }
         }
