@@ -1,8 +1,9 @@
 package com.sharedmodels;
 
+import java.io.Serializable;
 import java.util.UUID;
 
-public class DeleteData {
+public class DeleteData implements Serializable {
 
     private UUID id;
     private String emailAddress;
