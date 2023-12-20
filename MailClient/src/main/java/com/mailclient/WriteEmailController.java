@@ -49,12 +49,14 @@ public class WriteEmailController implements Initializable {
         if (!isEmailDataCorrect()) return;
         errorLabel.setText("");
 
+        Email emailToSend = generateEmailFromUserData();
         ServerResponse serverResponse = new CommunicationHelper().SendEmail(generateEmailFromUserData());
         if (serverResponse.getResponseType() != ResponseType.OK) {
             errorLabel.setText(serverResponse.getResponseDescription());
             return;
         }
 
+        SessionData.getInstance().getInboxEmails().add(emailToSend);
         Utils.loadNewScene("inbox-view.fxml");
     }
 
