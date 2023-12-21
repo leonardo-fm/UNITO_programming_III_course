@@ -41,7 +41,7 @@ public class EmailActivity implements Runnable {
             out.writeObject(res);
             socket.close();
         } catch (Exception ex) {
-            ex.printStackTrace();
+            serverModel.addLog("Error in processing request: " + ex);
         }
     }
 
