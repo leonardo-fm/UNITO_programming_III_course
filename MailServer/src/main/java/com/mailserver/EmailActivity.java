@@ -88,6 +88,7 @@ public class EmailActivity implements Runnable {
                 return;
             }
         }
+        res.setPayload(email.getId());
         res.setResponseType(ResponseType.OK);
     }
 
