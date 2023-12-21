@@ -50,7 +50,9 @@ public class InboxController implements Initializable {
 
     public void reloadInbox() {
         try {
-            Utils.loadNewScene("inbox-view.fxml");
+            String inboxView = "inbox-view.fxml";
+            if (SessionData.getInstance().getCurrentView() == inboxView)
+                Utils.loadNewScene(inboxView);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -99,7 +101,8 @@ public class InboxController implements Initializable {
         Button button = new Button("Read");
         button.setOnMouseClicked(event -> {
             try {
-                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("readEmail-view.fxml"));
+                String readEmailView = "readEmail-view.fxml";
+                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(readEmailView));
                 Parent root = fxmlLoader.load();
 
                 ReadEmailController readEmailController = fxmlLoader.getController();
@@ -109,6 +112,7 @@ public class InboxController implements Initializable {
 
                 Stage currentStage = SessionData.getInstance().getCurrentStage();
                 currentStage.setScene(scene);
+                SessionData.getInstance().setCurrentView(readEmailView);
                 currentStage.show();
             } catch (IOException ex) {
                 throw new RuntimeException(ex);

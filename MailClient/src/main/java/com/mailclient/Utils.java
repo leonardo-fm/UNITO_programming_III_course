@@ -35,6 +35,7 @@ public class Utils {
 
         Stage currentStage = SessionData.getInstance().getCurrentStage();
         currentStage.setScene(scene);
+        SessionData.getInstance().setCurrentView(viewName);
         currentStage.show();
     }
 
