@@ -62,7 +62,7 @@ public class ReadEmailController implements Initializable {
         alert.showAndWait();
         if (alert.getResult() == ButtonType.NO) return;
 
-        ServerResponse serverResponse = new SingleCommunicationHelper().DeleteEmail(currentOpenedEmail.getId());
+        ServerResponse serverResponse = new CommunicationHelper().DeleteEmail(currentOpenedEmail.getId());
         if (serverResponse.getResponseType() != ResponseType.OK) {
             errorLabel.setText(serverResponse.getResponseDescription());
             return;
@@ -86,7 +86,7 @@ public class ReadEmailController implements Initializable {
             if (!isEmailDataCorrect(forwardTo)) return;
             errorLabel.setText("");
 
-            ServerResponse serverResponse = new SingleCommunicationHelper().SendEmail(generateForwardEmail(forwardTo));
+            ServerResponse serverResponse = new CommunicationHelper().SendEmail(generateForwardEmail(forwardTo));
             if (serverResponse.getResponseType() != ResponseType.OK) {
                 errorLabel.setText("Error while forwarding the email request to the server");
                 return;

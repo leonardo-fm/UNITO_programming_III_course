@@ -52,11 +52,12 @@ public class EmailSynchronizer {
     public void syncEmails() throws InterruptedException {
         timeBetweenChecks = defaultTimeBetweenChecks;
         ServerResponse serverResponse = null;
+        CommunicationHelper communicationHelper = new CommunicationHelper();
         List<Email> newEmails;
         while (startSync) {
             Thread.sleep(timeBetweenChecks);
 
-            serverResponse = new SingleCommunicationHelper().GetNewEmails();
+            serverResponse = communicationHelper.GetNewEmails();
             if (serverResponse.getResponseType() != ResponseType.OK) {
                 if (--maxIncreaseTime <= 0)
                     timeBetweenChecks *= (long) 1.5;

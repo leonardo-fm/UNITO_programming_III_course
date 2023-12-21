@@ -10,16 +10,16 @@ import java.util.UUID;
 
 import static com.sharedmodels.MethodType.*;
 
-public class SingleCommunicationHelper {
+public class CommunicationHelper {
 
     private Socket socket;
 
     private String host = "127.0.0.1";
     private int port = 8189;
 
-    public SingleCommunicationHelper() { }
+    public CommunicationHelper() { }
 
-    public SingleCommunicationHelper(String host, int port) {
+    public CommunicationHelper(String host, int port) {
         this.host = host;
         this.port = port;
     }
@@ -32,8 +32,9 @@ public class SingleCommunicationHelper {
             outputStream.writeObject(req);
 
             ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
+            ServerResponse serverResponse = (ServerResponse) inputStream.readObject();
             closeCommunication();
-            return (ServerResponse) inputStream.readObject();
+            return serverResponse;
         } catch (IOException | ClassNotFoundException e) {
             closeCommunication();
             return new ServerResponse(ResponseType.ERROR, "Error while communicating with the server", null);
@@ -48,8 +49,9 @@ public class SingleCommunicationHelper {
             outputStream.writeObject(req);
 
             ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
+            ServerResponse serverResponse = (ServerResponse) inputStream.readObject();
             closeCommunication();
-            return (ServerResponse) inputStream.readObject();
+            return serverResponse;
         } catch (IOException | ClassNotFoundException e) {
             closeCommunication();
             return new ServerResponse(ResponseType.ERROR, "Error while communicating with the server", null);
@@ -65,7 +67,6 @@ public class SingleCommunicationHelper {
 
             ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
             ServerResponse serverResponse = (ServerResponse) inputStream.readObject();
-
             closeCommunication();
             return serverResponse;
         } catch (IOException | ClassNotFoundException e) {
@@ -83,7 +84,6 @@ public class SingleCommunicationHelper {
 
             ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
             ServerResponse serverResponse = (ServerResponse) inputStream.readObject();
-
             closeCommunication();
             return serverResponse;
         } catch (IOException | ClassNotFoundException e) {
@@ -101,8 +101,9 @@ public class SingleCommunicationHelper {
             outputStream.writeObject(req);
 
             ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
+            ServerResponse serverResponse = (ServerResponse) inputStream.readObject();
             closeCommunication();
-            return (ServerResponse) inputStream.readObject();
+            return serverResponse;
         } catch (IOException | ClassNotFoundException e) {
             closeCommunication();
             return new ServerResponse(ResponseType.ERROR, "Error while communicating with the server", null);
