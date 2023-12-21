@@ -38,7 +38,7 @@ public class LoginController implements Initializable {
             return;
         }
 
-        ServerResponse serverResponse = new CommunicationHelper().checkSupportedEmailAddress(emailAddress);
+        ServerResponse serverResponse = new SingleCommunicationHelper().checkSupportedEmailAddress(emailAddress);
         if (serverResponse.getResponseType() != ResponseType.OK) {
             errorLabel.setText(serverResponse.getResponseDescription());
             return;

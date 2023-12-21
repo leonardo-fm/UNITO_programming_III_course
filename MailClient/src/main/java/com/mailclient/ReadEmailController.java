@@ -10,13 +10,11 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-import javafx.stage.Window;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class ReadEmailController implements Initializable {
@@ -64,7 +62,7 @@ public class ReadEmailController implements Initializable {
         alert.showAndWait();
         if (alert.getResult() == ButtonType.NO) return;
 
-        ServerResponse serverResponse = new CommunicationHelper().DeleteEmail(currentOpenedEmail.getId());
+        ServerResponse serverResponse = new SingleCommunicationHelper().DeleteEmail(currentOpenedEmail.getId());
         if (serverResponse.getResponseType() != ResponseType.OK) {
             errorLabel.setText(serverResponse.getResponseDescription());
             return;
@@ -88,7 +86,7 @@ public class ReadEmailController implements Initializable {
             if (!isEmailDataCorrect(forwardTo)) return;
             errorLabel.setText("");
 
-            ServerResponse serverResponse = new CommunicationHelper().SendEmail(generateForwardEmail(forwardTo));
+            ServerResponse serverResponse = new SingleCommunicationHelper().SendEmail(generateForwardEmail(forwardTo));
             if (serverResponse.getResponseType() != ResponseType.OK) {
                 errorLabel.setText("Error while forwarding the email request to the server");
                 return;

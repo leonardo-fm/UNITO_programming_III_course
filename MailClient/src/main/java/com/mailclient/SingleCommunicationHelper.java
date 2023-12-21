@@ -10,52 +10,55 @@ import java.util.UUID;
 
 import static com.sharedmodels.MethodType.*;
 
-public class CommunicationHelper {
+public class SingleCommunicationHelper {
 
     private Socket socket;
 
-    public CommunicationHelper() {
-        try {
-            socket = new Socket("127.0.0.1", 8189);
-        } catch (IOException e) {
-            System.out.println(e);
-        }
+    private String host = "127.0.0.1";
+    private int port = 8189;
+
+    public SingleCommunicationHelper() { }
+
+    public SingleCommunicationHelper(String host, int port) {
+        this.host = host;
+        this.port = port;
     }
 
     public ServerResponse SendEmail(Email email) {
         try {
-            if (socket == null) throw new IOException();
-
+            openCommunication();
             ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
             ServerRequest req = new ServerRequest(SEND_EMAIL, email);
             outputStream.writeObject(req);
 
             ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
+            closeCommunication();
             return (ServerResponse) inputStream.readObject();
         } catch (IOException | ClassNotFoundException e) {
+            closeCommunication();
             return new ServerResponse(ResponseType.ERROR, "Error while communicating with the server", null);
         }
     }
 
     public ServerResponse checkSupportedEmailAddress(String emailAddress) {
         try {
-            if (socket == null) throw new IOException();
-
+            openCommunication();
             ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
             ServerRequest req = new ServerRequest(CHECK_SUPPORTED_EMAIL_ADDRESS, emailAddress);
             outputStream.writeObject(req);
 
             ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
+            closeCommunication();
             return (ServerResponse) inputStream.readObject();
         } catch (IOException | ClassNotFoundException e) {
+            closeCommunication();
             return new ServerResponse(ResponseType.ERROR, "Error while communicating with the server", null);
         }
     }
 
     public ServerResponse GetInboxEmails() {
         try {
-            if (socket == null) throw new IOException();
-
+            openCommunication();
             ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
             ServerRequest req = new ServerRequest(GET_ALL_EMAILS, SessionData.getInstance().getUserLogged());
             outputStream.writeObject(req);
@@ -63,16 +66,17 @@ public class CommunicationHelper {
             ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
             ServerResponse serverResponse = (ServerResponse) inputStream.readObject();
 
+            closeCommunication();
             return serverResponse;
         } catch (IOException | ClassNotFoundException e) {
+            closeCommunication();
             return new ServerResponse(ResponseType.ERROR, "Error while communicating with the server", null);
         }
     }
 
     public ServerResponse GetNewEmails() {
         try {
-            if (socket == null) throw new IOException();
-
+            openCommunication();
             ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
             ServerRequest req = new ServerRequest(GET_NEW_EMAILS, SessionData.getInstance().getUserLogged());
             outputStream.writeObject(req);
@@ -80,25 +84,44 @@ public class CommunicationHelper {
             ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
             ServerResponse serverResponse = (ServerResponse) inputStream.readObject();
 
+            closeCommunication();
             return serverResponse;
         } catch (IOException | ClassNotFoundException e) {
+            closeCommunication();
             return new ServerResponse(ResponseType.ERROR, "Error while communicating with the server", null);
         }
     }
 
     public ServerResponse DeleteEmail(UUID emailUUID) {
         try {
-            if (socket == null) throw new IOException();
-
+            openCommunication();
             ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
             DeleteData deleteData = new DeleteData(emailUUID, SessionData.getInstance().getUserLogged());
             ServerRequest req = new ServerRequest(DELETE_EMAIL, deleteData);
             outputStream.writeObject(req);
 
             ObjectInputStream inputStream = new ObjectInputStream(socket.getInputStream());
+            closeCommunication();
             return (ServerResponse) inputStream.readObject();
         } catch (IOException | ClassNotFoundException e) {
+            closeCommunication();
             return new ServerResponse(ResponseType.ERROR, "Error while communicating with the server", null);
+        }
+    }
+
+    private void openCommunication() {
+        try {
+            socket = new Socket(host, port);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private void closeCommunication() {
+        try {
+            socket.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 }
