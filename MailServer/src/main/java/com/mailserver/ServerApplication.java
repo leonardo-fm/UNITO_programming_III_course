@@ -14,7 +14,7 @@ import java.util.List;
 
 public class ServerApplication extends Application {
     private Thread serverThread;
-    private static int hostPort;
+    private static int hostPort = 8190;
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader serverLoader = new FXMLLoader(ServerApplication.class.getResource("server-view.fxml"));
@@ -59,7 +59,6 @@ public class ServerApplication extends Application {
             try {
                 hostPort = Integer.parseInt(args[0]);
             } catch (NumberFormatException ex){
-                hostPort = 8189;
                 System.out.println("Host port number not valid. Using default 8189");
             }
         }
