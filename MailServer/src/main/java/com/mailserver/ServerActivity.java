@@ -8,9 +8,8 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class ServerActivity implements Runnable {
-    private ServerSocket serverSocket;
     private Socket incoming;
-    private ServerModel serverModel;
+    private final ServerModel serverModel;
     private final ConfigModel config;
 
     public ServerActivity(ServerModel serverModel, ConfigModel config) {
@@ -21,24 +20,29 @@ public class ServerActivity implements Runnable {
     @Override
     public void run() {
         try {
-            serverSocket = new ServerSocket(config.getHostPort());
+            ServerSocket serverSocket = new ServerSocket(config.getHostPort());
             while (true) {
                 incoming = serverSocket.accept();
                 try {
                     Thread t = new Thread(new EmailActivity(incoming, serverModel, config));
                     t.setDaemon(true);
                     t.start();
-                    t.join();
+                    t.setUncaughtExceptionHandler((t1, e) -> {
+                        try{
+                            incoming.close();
+                        }
+                        catch (IOException ex){
+                            serverModel.addLog("Error on closing connection: " + ex);
+                        }
+                    });
                 } catch (Exception ex) {
-                    ex.printStackTrace();
-                }
-                finally {
+                    serverModel.addLog("Error on starting thread: " + ex);
                     incoming.close();
                 }
             }
         }
         catch (IOException ex) {
-            ex.printStackTrace();
+            serverModel.addLog(ex.toString());
         }
     }
 }

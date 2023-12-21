@@ -10,11 +10,11 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Paths;
 import java.util.List;
 
 public class ServerApplication extends Application {
     private Thread serverThread;
+    private static int hostPort;
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader serverLoader = new FXMLLoader(ServerApplication.class.getResource("server-view.fxml"));
@@ -28,7 +28,13 @@ public class ServerApplication extends Application {
         stage.setScene(scene);
         stage.show();
 
-        ConfigModel config = new ConfigModel(8189);
+        ConfigModel config = new ConfigModel(hostPort);
+        File f = new File("data/emails.txt");
+        if (!f.exists() || f.isDirectory()) {
+            serverModel.addLog(f.getAbsolutePath() + " not found. Reopen the server with that.");
+            return;
+        }
+
         List<String> mailConfigs = FileUtility.readFileLines("data/emails.txt");
         for (String mailConfig : mailConfigs){
             String[] mail = mailConfig.split(";");
@@ -45,9 +51,18 @@ public class ServerApplication extends Application {
 
     @Override
     public void stop(){
-        serverThread.interrupt();
+        if (serverThread != null)
+            serverThread.interrupt();
     }
     public static void main(String[] args) {
+        if (args.length > 0){
+            try {
+                hostPort = Integer.parseInt(args[0]);
+            } catch (NumberFormatException ex){
+                hostPort = 8189;
+                System.out.println("Host port number not valid. Using default 8189");
+            }
+        }
         launch();
     }
 }

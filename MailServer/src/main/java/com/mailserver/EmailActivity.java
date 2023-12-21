@@ -12,7 +12,6 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class EmailActivity implements Runnable {
 
@@ -40,8 +39,9 @@ public class EmailActivity implements Runnable {
             }
             ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
             out.writeObject(res);
+            socket.close();
         } catch (Exception ex) {
-            ex.printStackTrace();
+            serverModel.addLog("Error in processing request: " + ex);
         }
     }
 
@@ -53,6 +53,7 @@ public class EmailActivity implements Runnable {
         }
         catch (ClassCastException ex){
             res.setResponseType(ResponseType.INVALID_PAYLOAD);
+            res.setResponseDescription("Payload type not valid");
             serverModel.addLog("Request error:" + ResponseType.INVALID_PAYLOAD);
             serverModel.addLog(ex.toString());
             return;
@@ -62,6 +63,7 @@ public class EmailActivity implements Runnable {
         String mailAddressId = config.getMailAddresses().get(email.getSender());
         if (mailAddressId == null){
             res.setResponseType(ResponseType.INVALID_SENDER_MAIL_ADDRESS);
+            res.setResponseDescription("Invalid sender mail address: " + email.getSender());
             serverModel.addLog("Request error: " + ResponseType.INVALID_SENDER_MAIL_ADDRESS + " for " + email.getSender());
             return;
         }
@@ -69,6 +71,7 @@ public class EmailActivity implements Runnable {
             String id = config.getMailAddresses().get(emailAddress);
             if (id == null){
                 res.setResponseType(ResponseType.INVALID_RECEIVER_MAIL_ADDRESS);
+                res.setResponseDescription("Invalid receiver mail address: " + emailAddress);
                 serverModel.addLog("Request error: " + ResponseType.INVALID_RECEIVER_MAIL_ADDRESS + " for " + emailAddress);
                 return;
             }
@@ -77,6 +80,7 @@ public class EmailActivity implements Runnable {
         // Saving sender email into file
         if (!saveEmailOnFile("mail_data_" + mailAddressId, email)){
             res.setResponseType(ResponseType.SAVING_DATA_ERROR);
+            res.setResponseDescription("Error on saving data");
             return;
         }
 
@@ -85,9 +89,11 @@ public class EmailActivity implements Runnable {
             String id = config.getMailAddresses().get(emailAddress);
             if (!saveEmailOnFile("mail_new_data_" + id, email)){
                 res.setResponseType(ResponseType.SAVING_DATA_ERROR);
+                res.setResponseDescription("Error on saving data");
                 return;
             }
         }
+        res.setPayload(email.getId());
         res.setResponseType(ResponseType.OK);
     }
 
@@ -99,6 +105,7 @@ public class EmailActivity implements Runnable {
         }
         catch (ClassCastException ex){
             res.setResponseType(ResponseType.INVALID_PAYLOAD);
+            res.setResponseDescription("Payload type not valid");
             serverModel.addLog("Request error:" + ResponseType.INVALID_PAYLOAD);
             serverModel.addLog(ex.toString());
             return;
@@ -107,6 +114,7 @@ public class EmailActivity implements Runnable {
         String mailAddressId = config.getMailAddresses().get(reqData.getEmailAddress());
         if (mailAddressId == null){
             res.setResponseType(ResponseType.INVALID_MAIL_ADDRESS);
+            res.setResponseDescription("Invalid mail address: " + reqData.getEmailAddress());
             serverModel.addLog("Request error: " + ResponseType.INVALID_MAIL_ADDRESS + " for " + reqData.getEmailAddress());
             return;
         }
@@ -119,6 +127,7 @@ public class EmailActivity implements Runnable {
             System.out.println("After: " + emails);
             if (!removed){
                 res.setResponseType(ResponseType.NOT_FOUND);
+                res.setResponseDescription("Email to remove not found: " + reqData.getId());
                 return;
             }
             FileUtility.writeFileObject("data/mail_data_" + mailAddressId, emails);
@@ -126,6 +135,7 @@ public class EmailActivity implements Runnable {
         }
         catch (IOException | ClassNotFoundException ex){
             res.setResponseType(ResponseType.ERROR);
+            res.setResponseDescription("Error on loading file");
             serverModel.addLog("Server error: " + ex);
         }
     }
@@ -138,6 +148,7 @@ public class EmailActivity implements Runnable {
         }
         catch (ClassCastException ex){
             res.setResponseType(ResponseType.INVALID_PAYLOAD);
+            res.setResponseDescription("Payload type not valid");
             serverModel.addLog("Request error:" + ResponseType.INVALID_PAYLOAD);
             serverModel.addLog(ex.toString());
             return;
@@ -146,6 +157,7 @@ public class EmailActivity implements Runnable {
         String mailAddressId = config.getMailAddresses().get(emailAddress);
         if (mailAddressId == null){
             res.setResponseType(ResponseType.INVALID_MAIL_ADDRESS);
+            res.setResponseDescription("Invalid mail address: " + emailAddress);
             serverModel.addLog("Request error: " + ResponseType.INVALID_MAIL_ADDRESS + " for " + emailAddress);
             return;
         }
@@ -161,6 +173,7 @@ public class EmailActivity implements Runnable {
         }
         catch (IOException | ClassNotFoundException ex){
             res.setResponseType(ResponseType.ERROR);
+            res.setResponseDescription("Error on loading file");
             serverModel.addLog("Server error: " + ex);
         }
     }
@@ -172,6 +185,7 @@ public class EmailActivity implements Runnable {
         }
         catch (ClassCastException ex){
             res.setResponseType(ResponseType.INVALID_PAYLOAD);
+            res.setResponseDescription("Payload type not valid");
             serverModel.addLog("Request error:" + ResponseType.INVALID_PAYLOAD);
             serverModel.addLog(ex.toString());
             return;
@@ -180,6 +194,7 @@ public class EmailActivity implements Runnable {
         String mailAddressId = config.getMailAddresses().get(emailAddress);
         if (mailAddressId == null){
             res.setResponseType(ResponseType.INVALID_MAIL_ADDRESS);
+            res.setResponseDescription("Invalid mail address: " + emailAddress);
             serverModel.addLog("Request error: " + ResponseType.INVALID_MAIL_ADDRESS + " for " + emailAddress);
             return;
         }
@@ -193,6 +208,7 @@ public class EmailActivity implements Runnable {
         }
         catch (IOException | ClassNotFoundException ex){
             res.setResponseType(ResponseType.ERROR);
+            res.setResponseDescription("Error on loading file");
             serverModel.addLog("Server error: " + ex);
             return;
         }
@@ -206,6 +222,7 @@ public class EmailActivity implements Runnable {
         }
         catch (IOException | ClassNotFoundException ex){
             res.setResponseType(ResponseType.ERROR);
+            res.setResponseDescription("Error on loading file");
             serverModel.addLog("Server error: " + ex);
             return;
         }
@@ -220,6 +237,7 @@ public class EmailActivity implements Runnable {
         }
         catch (IOException ex){
             res.setResponseType(ResponseType.ERROR);
+            res.setResponseDescription("Error on loading file");
             serverModel.addLog("Server error: " + ex);
         }
     }
@@ -231,6 +249,7 @@ public class EmailActivity implements Runnable {
         }
         catch (ClassCastException ex){
             res.setResponseType(ResponseType.INVALID_PAYLOAD);
+            res.setResponseDescription("Payload type not valid");
             serverModel.addLog("Request error:" + ResponseType.INVALID_PAYLOAD);
             serverModel.addLog(ex.toString());
             return;
@@ -239,6 +258,7 @@ public class EmailActivity implements Runnable {
         String id = config.getMailAddresses().get(emailAddress);
         if (id == null) {
             res.setResponseType(ResponseType.INVALID_MAIL_ADDRESS);
+            res.setResponseDescription("Invalid mail address: " + emailAddress);
             return;
         }
         res.setResponseType(ResponseType.OK);
