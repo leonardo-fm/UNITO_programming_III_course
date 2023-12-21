@@ -126,7 +126,8 @@ public class ReadEmailController implements Initializable {
 
     @FXML
     protected void onReplyBtnClick() throws IOException {
-        URL loadedView = getClass().getResource("writeEmail-view.fxml");
+        String writeEmailView = "writeEmail-view.fxml";
+        URL loadedView = getClass().getResource(writeEmailView);
         if (loadedView == null)
             throw new FileNotFoundException("Write page not found!");
 
@@ -141,12 +142,14 @@ public class ReadEmailController implements Initializable {
         scene = new Scene(root);
         Stage currentStage = SessionData.getInstance().getCurrentStage();
         currentStage.setScene(scene);
+        SessionData.getInstance().setCurrentView(writeEmailView);
         currentStage.show();
     }
 
     @FXML
     protected void onReplyAllBtnClick() throws IOException {
-        URL loadedView = getClass().getResource("writeEmail-view.fxml");
+        String writeEmailView = "writeEmail-view.fxml";
+        URL loadedView = getClass().getResource(writeEmailView);
         if (loadedView == null)
             throw new FileNotFoundException("Write page not found!");
 
@@ -163,6 +166,7 @@ public class ReadEmailController implements Initializable {
         scene = new Scene(root);
         Stage currentStage = SessionData.getInstance().getCurrentStage();
         currentStage.setScene(scene);
+        SessionData.getInstance().setCurrentView(writeEmailView);
         currentStage.show();
     }
 }

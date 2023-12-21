@@ -10,6 +10,7 @@ public class SessionData {
 
     private String userLogged = "";
     private Stage currentStage = null;
+    private String currentView = null;
     private List<Email> inboxEmails = null;
     private boolean isInboxLoaded = false;
 
@@ -37,6 +38,13 @@ public class SessionData {
     }
     public void setCurrentStage(Stage currentStage) {
         this.currentStage = currentStage;
+    }
+
+    public String getCurrentView() {
+        return currentView;
+    }
+    public void setCurrentView(String currentView) {
+        this.currentView = currentView;
     }
 
     public List<Email> getInboxEmails() {

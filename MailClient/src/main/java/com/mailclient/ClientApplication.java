@@ -26,6 +26,7 @@ public class ClientApplication extends Application {
         Parent root = FXMLLoader.load(landingPageUrl);
         Scene scene = new Scene(root);
         stage.setScene(scene);
+        SessionData.getInstance().setCurrentView(landingPage);
         stage.show();
 
         Utils.Log("application started successfully");
