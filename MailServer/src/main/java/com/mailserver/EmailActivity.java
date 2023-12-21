@@ -39,6 +39,7 @@ public class EmailActivity implements Runnable {
             }
             ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
             out.writeObject(res);
+            socket.close();
         } catch (Exception ex) {
             ex.printStackTrace();
         }

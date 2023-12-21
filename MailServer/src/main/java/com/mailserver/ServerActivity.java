@@ -28,11 +28,14 @@ public class ServerActivity implements Runnable {
                     Thread t = new Thread(new EmailActivity(incoming, serverModel, config));
                     t.setDaemon(true);
                     t.start();
-                    t.join();
+                    t.setUncaughtExceptionHandler((t1, e) -> {
+                        try{
+                            incoming.close();
+                        }
+                        catch (IOException ex){}
+                    });
                 } catch (Exception ex) {
                     ex.printStackTrace();
-                }
-                finally {
                     incoming.close();
                 }
             }
