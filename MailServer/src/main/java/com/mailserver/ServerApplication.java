@@ -14,7 +14,7 @@ import java.util.List;
 
 public class ServerApplication extends Application {
     private Thread serverThread;
-    private static int hostPort = 8190;
+    private static int hostPort = 8189;
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader serverLoader = new FXMLLoader(ServerApplication.class.getResource("server-view.fxml"));
