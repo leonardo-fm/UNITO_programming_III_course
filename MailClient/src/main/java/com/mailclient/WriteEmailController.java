@@ -29,14 +29,15 @@ public class WriteEmailController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        SessionData.getInstance().getCurrentStage().setTitle("Write");
+        SessionData.getInstance().getCurrentStage().setTitle("Write - " + SessionData.getInstance().getUserLogged());
         SessionData.getInstance().getCurrentStage().setResizable(false);
 
         errorLabel.setText("");
     }
 
-    public void setupReply(List<String> receivers) {
+    public void setupReply(List<String> receivers, String emailObject) {
         toTextField.setText(String.join(", ", receivers));
+        emailObjectTextField.setText(emailObject);
     }
 
     @FXML

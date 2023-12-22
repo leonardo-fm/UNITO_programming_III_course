@@ -32,5 +32,17 @@ public class ClientApplication extends Application {
         Utils.Log("application started successfully");
     }
 
-    public static void main(String[] args) { launch(); }
+    public static void main(String[] args) {
+        try {
+            if (args.length > 0)
+                SessionData.getInstance().setPort(Integer.parseInt(args[0]));
+
+            if (args.length > 1)
+                SessionData.getInstance().setHost(args[1]);
+        } catch (NumberFormatException ex) {
+            System.out.println("Host port number not valid. Using default 8189");
+        }
+
+        launch();
+    }
 }

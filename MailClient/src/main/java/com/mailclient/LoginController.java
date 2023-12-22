@@ -26,6 +26,7 @@ public class LoginController implements Initializable {
         SessionData.getInstance().getCurrentStage().setTitle("User selection");
         SessionData.getInstance().getCurrentStage().setResizable(false);
 
+        SessionData.getInstance().setUserLogged(null);
         errorLabel.setText("");
         loginPane.requestFocus();
     }

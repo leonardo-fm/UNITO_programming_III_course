@@ -19,7 +19,7 @@ import java.util.*;
 
 public class ReadEmailController implements Initializable {
 
-    private final SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss.S");
+    private final SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
     private Scene scene;
     private Parent root;
     private Email currentOpenedEmail;
@@ -31,7 +31,7 @@ public class ReadEmailController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        SessionData.getInstance().getCurrentStage().setTitle("Read");
+        SessionData.getInstance().getCurrentStage().setTitle("Read - " + SessionData.getInstance().getUserLogged());
         SessionData.getInstance().getCurrentStage().setResizable(false);
 
         errorLabel.setText("");
@@ -59,6 +59,7 @@ public class ReadEmailController implements Initializable {
     @FXML
     protected void onDeleteBtnClick() throws IOException {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you shore to delete this email?", ButtonType.OK, ButtonType.NO);
+        alert.initOwner(SessionData.getInstance().getCurrentStage());
         alert.showAndWait();
         if (alert.getResult() == ButtonType.NO) return;
 
@@ -80,6 +81,7 @@ public class ReadEmailController implements Initializable {
         textInputDialog.setTitle("");
         textInputDialog.setHeaderText("Forward");
         textInputDialog.setContentText("To: ");
+        textInputDialog.initOwner(SessionData.getInstance().getCurrentStage());
         Optional<String> result = textInputDialog.showAndWait();
         result.ifPresent(forwardTo -> {
 
@@ -118,7 +120,8 @@ public class ReadEmailController implements Initializable {
         String sender = SessionData.getInstance().getUserLogged();
         List<String> receivers = Arrays.stream(forwardTo.replaceAll("\\s+", "").split(",", -1)).toList();
         String emailObject = currentOpenedEmail.getMailObject();
-        String emailContent = currentOpenedEmail.getMainContent();
+        String emailContent = "[Forwarded from " + currentOpenedEmail.getSender() + " to " + String.join(", ", currentOpenedEmail.getReceivers()) + "]\n"
+                + currentOpenedEmail.getMainContent();
         return new Email(sender, receivers, emailObject, emailContent);
     }
 
@@ -135,7 +138,7 @@ public class ReadEmailController implements Initializable {
         WriteEmailController writeEmailController = fxmlLoader.getController();
         List<String> replyTo = new ArrayList<>();
         replyTo.add(currentOpenedEmail.getSender());
-        writeEmailController.setupReply(replyTo);
+        writeEmailController.setupReply(replyTo, currentOpenedEmail.getMailObject());
 
         scene = new Scene(root);
         Stage currentStage = SessionData.getInstance().getCurrentStage();
@@ -159,7 +162,7 @@ public class ReadEmailController implements Initializable {
         replyTo.add(currentOpenedEmail.getSender());
         replyTo.addAll(currentOpenedEmail.getReceivers());
         replyTo.remove(SessionData.getInstance().getUserLogged());
-        writeEmailController.setupReply(replyTo);
+        writeEmailController.setupReply(replyTo, currentOpenedEmail.getMailObject());
 
         scene = new Scene(root);
         Stage currentStage = SessionData.getInstance().getCurrentStage();

@@ -21,11 +21,14 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
 
 public class InboxController implements Initializable {
+
+    private final SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yy HH:mm");
 
     @FXML
     private Label username;
@@ -38,7 +41,7 @@ public class InboxController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resourceBundle) {
-        SessionData.getInstance().getCurrentStage().setTitle("Inbox");
+        SessionData.getInstance().getCurrentStage().setTitle("Inbox - " + SessionData.getInstance().getUserLogged());
         SessionData.getInstance().getCurrentStage().setResizable(false);
 
         errorLabel.setText("");
@@ -79,7 +82,8 @@ public class InboxController implements Initializable {
 
             Button button = generateButton(inboxEmail);
             Text emailPreview = new Text(
-                    "\t" + inboxEmail.getSender() + " | "
+                    "\t" + formatter.format(inboxEmail.getMailDate()) + " "
+                            + inboxEmail.getSender() + " | "
                             + inboxEmail.getMailObject() + " - "
                             + inboxEmail.getMainContent());
             emailPreview.setTextAlignment(TextAlignment.CENTER);

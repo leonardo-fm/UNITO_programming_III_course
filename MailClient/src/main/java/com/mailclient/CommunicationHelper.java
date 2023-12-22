@@ -14,15 +14,7 @@ public class CommunicationHelper {
 
     private Socket socket;
 
-    private String host = "127.0.0.1";
-    private int port = 8189;
-
     public CommunicationHelper() { }
-
-    public CommunicationHelper(String host, int port) {
-        this.host = host;
-        this.port = port;
-    }
 
     public ServerResponse SendEmail(Email email) {
         try {
@@ -110,19 +102,16 @@ public class CommunicationHelper {
         }
     }
 
-    private void openCommunication() {
-        try {
-            socket = new Socket(host, port);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+    private void openCommunication() throws IOException {
+        socket = new Socket(SessionData.getInstance().getHost(), SessionData.getInstance().getPort());
     }
 
     private void closeCommunication() {
         try {
-            socket.close();
+            if (socket != null)
+                socket.close();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            System.out.println("Error while closing socket: " + e);
         }
     }
 }

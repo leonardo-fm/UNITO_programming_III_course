@@ -87,6 +87,7 @@ public class EmailSynchronizer {
                         inboxController.reloadInbox();
 
                         Alert alert = new Alert(Alert.AlertType.INFORMATION, numberOfNewEmails + " new email arrived!", ButtonType.OK);
+                        alert.initOwner(SessionData.getInstance().getCurrentStage());
                         alert.showAndWait();
                     } catch (IOException e) {
                         throw new RuntimeException(e);

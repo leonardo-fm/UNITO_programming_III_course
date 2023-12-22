@@ -13,6 +13,9 @@ public class SessionData {
     private String currentView = null;
     private List<Email> inboxEmails = null;
     private boolean isInboxLoaded = false;
+    private String host = "127.0.0.1";
+    private int port = 8189;
+
 
     private static SessionData instance;
     private SessionData() {};
@@ -63,5 +66,19 @@ public class SessionData {
 
     public boolean isInboxLoaded() {
         return isInboxLoaded;
+    }
+
+    public String getHost() {
+        return host;
+    }
+    public void setHost(String host) {
+        this.host = host;
+    }
+
+    public int getPort() {
+        return port;
+    }
+    public void setPort(int port) {
+        this.port = port;
     }
 }

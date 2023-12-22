@@ -12,7 +12,7 @@
     <children>
         <Label fx:id="errorLabel" disable="true" layoutX="20.0" layoutY="18.0" text="Error string here" textFill="RED" />
         <Button fx:id="cancelBtn" layoutX="294.0" layoutY="14.0" mnemonicParsing="false" onAction="#onCancelBtnClick" text="Cancel" />
-        <TextField fx:id="toTextField" layoutX="20.0" layoutY="50.0" prefWidth="326.0" promptText="To" text="example@test1.mail">
+        <TextField fx:id="toTextField" layoutX="20.0" layoutY="50.0" prefWidth="326.0" promptText="To" >
          <tooltip>
             <Tooltip text="To insert more then one receivers, put a coma between the emails. ex@edu.it, rx@edu.it, ...">
                <font>
@@ -20,8 +20,8 @@
                </font>
             </Tooltip>
          </tooltip></TextField>
-        <TextField fx:id="emailObjectTextField" layoutX="20.0" layoutY="84.0" prefHeight="25.0" prefWidth="326.0" promptText="Object" text="oggettto; ciao" />
-        <TextArea fx:id="emailTextArea" layoutX="20.0" layoutY="118.0" prefHeight="263.0" prefWidth="326.0" wrapText="true" text="Default email, HI! :D" />
+        <TextField fx:id="emailObjectTextField" layoutX="20.0" layoutY="84.0" prefHeight="25.0" prefWidth="326.0" promptText="Object" />
+        <TextArea fx:id="emailTextArea" layoutX="20.0" layoutY="118.0" prefHeight="263.0" prefWidth="326.0" wrapText="true" />
         <Button fx:id="sendBtn" layoutX="233.0" layoutY="394.0" mnemonicParsing="false" onAction="#onSendBtnClick" prefHeight="25.0" prefWidth="112.0" text="Send" />
     </children>
 </Pane>
