@@ -8,7 +8,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 public class ServerActivity implements Runnable {
-    private Socket incoming;
     private final ServerModel serverModel;
     private final ConfigModel config;
 
@@ -22,7 +21,7 @@ public class ServerActivity implements Runnable {
         try {
             ServerSocket serverSocket = new ServerSocket(config.getHostPort());
             while (true) {
-                incoming = serverSocket.accept();
+                Socket incoming = serverSocket.accept();
                 try {
                     Thread t = new Thread(new EmailActivity(incoming, serverModel, config));
                     t.setDaemon(true);
@@ -30,8 +29,9 @@ public class ServerActivity implements Runnable {
                     t.setUncaughtExceptionHandler((t1, e) -> {
                         try{
                             incoming.close();
+                            serverModel.addLog("Thread Uncaught Exception : " + e);
                         }
-                        catch (IOException ex){
+                        catch (Exception ex){
                             serverModel.addLog("Error on closing connection: " + ex);
                         }
                     });
