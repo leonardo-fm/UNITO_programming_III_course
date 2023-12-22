@@ -5,7 +5,6 @@ import com.mailserver.model.ServerModel;
 import javafx.application.Platform;
 import javafx.scene.control.Alert;
 
-import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -44,11 +43,9 @@ public class ServerActivity implements Runnable {
             }
         }
         catch (Exception ex){
-            Platform.runLater(new Runnable() {
-                @Override public void run() {
-                    new Alert(Alert.AlertType.ERROR, ex.getMessage()).showAndWait();
-                    Platform.exit();
-                }
+            Platform.runLater(() -> {
+                new Alert(Alert.AlertType.ERROR, ex.getMessage()).showAndWait();
+                Platform.exit();
             });
         }
     }
