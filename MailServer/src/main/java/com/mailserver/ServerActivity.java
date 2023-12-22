@@ -2,8 +2,9 @@ package com.mailserver;
 
 import com.mailserver.model.ConfigModel;
 import com.mailserver.model.ServerModel;
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
 
-import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -27,11 +28,10 @@ public class ServerActivity implements Runnable {
                     t.setDaemon(true);
                     t.start();
                     t.setUncaughtExceptionHandler((t1, e) -> {
-                        try{
+                        try {
                             incoming.close();
                             serverModel.addLog("Thread Uncaught Exception : " + e);
-                        }
-                        catch (Exception ex){
+                        } catch (Exception ex) {
                             serverModel.addLog("Error on closing connection: " + ex);
                         }
                     });
@@ -40,9 +40,11 @@ public class ServerActivity implements Runnable {
                     incoming.close();
                 }
             }
-        }
-        catch (IOException ex) {
-            serverModel.addLog(ex.toString());
+        } catch (Exception ex) {
+            Platform.runLater(() -> {
+                new Alert(Alert.AlertType.ERROR, ex.getMessage()).showAndWait();
+                Platform.exit();
+            });
         }
     }
 }

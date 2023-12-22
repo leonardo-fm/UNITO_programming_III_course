@@ -4,8 +4,10 @@ import com.mailserver.controller.ServerController;
 import com.mailserver.model.ConfigModel;
 import com.mailserver.model.ServerModel;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -15,6 +17,7 @@ import java.util.List;
 public class ServerApplication extends Application {
     private Thread serverThread;
     private static int hostPort = 8189;
+
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader serverLoader = new FXMLLoader(ServerApplication.class.getResource("server-view.fxml"));
@@ -31,12 +34,13 @@ public class ServerApplication extends Application {
         ConfigModel config = new ConfigModel(hostPort);
         File f = new File("data/emails.txt");
         if (!f.exists() || f.isDirectory()) {
-            serverModel.addLog(f.getAbsolutePath() + " not found. Reopen the server with that.");
+            new Alert(Alert.AlertType.ERROR, f.getAbsolutePath() + " not found. Reopen the server with that.").showAndWait();
+            Platform.exit();
             return;
         }
 
         List<String> mailConfigs = FileUtility.readFileLines("data/emails.txt");
-        for (String mailConfig : mailConfigs){
+        for (String mailConfig : mailConfigs) {
             String[] mail = mailConfig.split(";");
             config.addMailAddress(mail[0], mail[1]);
         }
@@ -50,15 +54,16 @@ public class ServerApplication extends Application {
     }
 
     @Override
-    public void stop(){
+    public void stop() {
         if (serverThread != null)
             serverThread.interrupt();
     }
+
     public static void main(String[] args) {
-        if (args.length > 0){
+        if (args.length > 0) {
             try {
                 hostPort = Integer.parseInt(args[0]);
-            } catch (NumberFormatException ex){
+            } catch (NumberFormatException ex) {
                 System.out.println("Host port number not valid. Using default 8189");
             }
         }
