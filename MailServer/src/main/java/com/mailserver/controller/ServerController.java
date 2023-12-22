@@ -11,7 +11,7 @@ public class ServerController {
     public TextArea logTextArea;
     private ServerModel model;
 
-    public void initModel(ServerModel model){
+    public void initModel(ServerModel model) {
 
         if (this.model != null)
             throw new IllegalStateException("Model can only be initialized once");

@@ -17,6 +17,7 @@ import java.util.List;
 public class ServerApplication extends Application {
     private Thread serverThread;
     private static int hostPort = 8189;
+
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader serverLoader = new FXMLLoader(ServerApplication.class.getResource("server-view.fxml"));
@@ -39,7 +40,7 @@ public class ServerApplication extends Application {
         }
 
         List<String> mailConfigs = FileUtility.readFileLines("data/emails.txt");
-        for (String mailConfig : mailConfigs){
+        for (String mailConfig : mailConfigs) {
             String[] mail = mailConfig.split(";");
             config.addMailAddress(mail[0], mail[1]);
         }
@@ -53,15 +54,16 @@ public class ServerApplication extends Application {
     }
 
     @Override
-    public void stop(){
+    public void stop() {
         if (serverThread != null)
             serverThread.interrupt();
     }
+
     public static void main(String[] args) {
-        if (args.length > 0){
+        if (args.length > 0) {
             try {
                 hostPort = Integer.parseInt(args[0]);
-            } catch (NumberFormatException ex){
+            } catch (NumberFormatException ex) {
                 System.out.println("Host port number not valid. Using default 8189");
             }
         }

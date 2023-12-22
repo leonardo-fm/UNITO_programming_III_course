@@ -28,11 +28,10 @@ public class ServerActivity implements Runnable {
                     t.setDaemon(true);
                     t.start();
                     t.setUncaughtExceptionHandler((t1, e) -> {
-                        try{
+                        try {
                             incoming.close();
                             serverModel.addLog("Thread Uncaught Exception : " + e);
-                        }
-                        catch (Exception ex){
+                        } catch (Exception ex) {
                             serverModel.addLog("Error on closing connection: " + ex);
                         }
                     });
@@ -41,8 +40,7 @@ public class ServerActivity implements Runnable {
                     incoming.close();
                 }
             }
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
             Platform.runLater(() -> {
                 new Alert(Alert.AlertType.ERROR, ex.getMessage()).showAndWait();
                 Platform.exit();

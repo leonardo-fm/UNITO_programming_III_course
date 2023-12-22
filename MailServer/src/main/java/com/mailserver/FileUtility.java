@@ -12,7 +12,7 @@ public class FileUtility {
         oos.close();
     }
 
-    public static Object readFileObject(String filename) throws IOException, ClassNotFoundException{
+    public static Object readFileObject(String filename) throws IOException, ClassNotFoundException {
         FileInputStream fin = new FileInputStream(filename);
         ObjectInputStream ois = new ObjectInputStream(fin);
         Object theData = ois.readObject();
@@ -20,7 +20,7 @@ public class FileUtility {
         return theData;
     }
 
-    public static List<String> readFileLines(String filename) throws IOException{
+    public static List<String> readFileLines(String filename) throws IOException {
         BufferedReader br = new BufferedReader(new FileReader(filename));
         List<String> lines = new ArrayList<>();
         String line;
