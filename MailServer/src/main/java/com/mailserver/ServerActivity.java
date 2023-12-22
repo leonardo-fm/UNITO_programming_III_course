@@ -2,6 +2,8 @@ package com.mailserver;
 
 import com.mailserver.model.ConfigModel;
 import com.mailserver.model.ServerModel;
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -41,8 +43,13 @@ public class ServerActivity implements Runnable {
                 }
             }
         }
-        catch (IOException ex) {
-            serverModel.addLog(ex.toString());
+        catch (Exception ex){
+            Platform.runLater(new Runnable() {
+                @Override public void run() {
+                    new Alert(Alert.AlertType.ERROR, ex.getMessage()).showAndWait();
+                    Platform.exit();
+                }
+            });
         }
     }
 }

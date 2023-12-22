@@ -4,8 +4,11 @@ import com.mailserver.controller.ServerController;
 import com.mailserver.model.ConfigModel;
 import com.mailserver.model.ServerModel;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -31,7 +34,8 @@ public class ServerApplication extends Application {
         ConfigModel config = new ConfigModel(hostPort);
         File f = new File("data/emails.txt");
         if (!f.exists() || f.isDirectory()) {
-            serverModel.addLog(f.getAbsolutePath() + " not found. Reopen the server with that.");
+            new Alert(Alert.AlertType.ERROR, f.getAbsolutePath() + " not found. Reopen the server with that.").showAndWait();
+            Platform.exit();
             return;
         }
 
