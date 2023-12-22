@@ -4,19 +4,13 @@ import com.sharedmodels.Email;
 import com.sharedmodels.ResponseType;
 import com.sharedmodels.ServerResponse;
 import javafx.application.Platform;
-import javafx.event.Event;
-import javafx.event.EventType;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
-import javafx.stage.Stage;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 
 public class EmailSynchronizer {
@@ -58,11 +52,12 @@ public class EmailSynchronizer {
     public void syncEmails() throws InterruptedException {
         timeBetweenChecks = defaultTimeBetweenChecks;
         ServerResponse serverResponse = null;
+        CommunicationHelper communicationHelper = new CommunicationHelper();
         List<Email> newEmails;
         while (startSync) {
             Thread.sleep(timeBetweenChecks);
 
-            serverResponse = new CommunicationHelper().GetNewEmails();
+            serverResponse = communicationHelper.GetNewEmails();
             if (serverResponse.getResponseType() != ResponseType.OK) {
                 if (--maxIncreaseTime <= 0)
                     timeBetweenChecks *= (long) 1.5;
