@@ -85,7 +85,7 @@ public class InboxController implements Initializable {
                     "\t" + formatter.format(inboxEmail.getMailDate()) + " "
                             + inboxEmail.getSender() + " | "
                             + inboxEmail.getMailObject() + " - "
-                            + inboxEmail.getMainContent());
+                            + inboxEmail.getMainContent().replace('\n', ' '));
             emailPreview.setTextAlignment(TextAlignment.CENTER);
 
             if (emailPreview.getText().length() > 75)

@@ -8,6 +8,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.layout.Region;
 import javafx.stage.Stage;
 
 import java.io.File;
@@ -34,7 +35,12 @@ public class ServerApplication extends Application {
         ConfigModel config = new ConfigModel(hostPort);
         File f = new File("data/emails.txt");
         if (!f.exists() || f.isDirectory()) {
-            new Alert(Alert.AlertType.ERROR, f.getAbsolutePath() + " not found. Reopen the server with that.").showAndWait();
+            Alert alert = new Alert(Alert.AlertType.ERROR, f.getAbsolutePath() + " not found. Reopen the server with that.");
+            alert.getDialogPane().setMinHeight(Region.USE_PREF_SIZE);
+            alert.getDialogPane().setMinWidth(Region.USE_PREF_SIZE);
+            alert.getDialogPane().setMaxHeight(Double.MAX_VALUE);
+            alert.getDialogPane().setMaxWidth(Double.MAX_VALUE);
+            alert.showAndWait();
             Platform.exit();
             return;
         }

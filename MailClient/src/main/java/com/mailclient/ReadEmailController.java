@@ -88,12 +88,15 @@ public class ReadEmailController implements Initializable {
             if (!isEmailDataCorrect(forwardTo)) return;
             errorLabel.setText("");
 
-            ServerResponse serverResponse = new CommunicationHelper().SendEmail(generateForwardEmail(forwardTo));
+            Email forwardedEmail = generateForwardEmail(forwardTo);
+            ServerResponse serverResponse = new CommunicationHelper().SendEmail(forwardedEmail);
             if (serverResponse.getResponseType() != ResponseType.OK) {
                 errorLabel.setText("Error while forwarding the email request to the server");
                 return;
             }
 
+            forwardedEmail.setId((UUID) serverResponse.getPayload());
+            SessionData.getInstance().addNewEmailOnTop(forwardedEmail);
             Utils.Log("successfully forwarded email");
 
             try {
@@ -105,6 +108,12 @@ public class ReadEmailController implements Initializable {
     }
 
     private boolean isEmailDataCorrect(String receiversText) {
+        receiversText = receiversText.replaceAll("\\s+", "");
+        if (receiversText.isEmpty()) {
+            errorLabel.setText("Must put at least one receiver");
+            return false;
+        }
+
         List<String> receivers = Arrays.stream(receiversText.split(",", -1)).toList();
         for (String email : receivers) {
             if (!Utils.isValidEmail(email)) {

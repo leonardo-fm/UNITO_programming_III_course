@@ -55,8 +55,6 @@ public class EmailSynchronizer {
         CommunicationHelper communicationHelper = new CommunicationHelper();
         List<Email> newEmails;
         while (startSync) {
-            Thread.sleep(timeBetweenChecks);
-
             serverResponse = communicationHelper.GetNewEmails();
             if (serverResponse.getResponseType() != ResponseType.OK) {
                 if (--maxIncreaseTime <= 0)
@@ -94,6 +92,7 @@ public class EmailSynchronizer {
                     }
                 });
             }
+            Thread.sleep(timeBetweenChecks);
         }
     }
 }
