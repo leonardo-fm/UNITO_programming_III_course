@@ -1,0 +1,7 @@
+com\sharedmodels\ResponseType.class
+com\sharedmodels\Email.class
+com\sharedmodels\ServerRequest.class
+module-info.class
+com\sharedmodels\DeleteData.class
+com\sharedmodels\MethodType.class
+com\sharedmodels\ServerResponse.class
