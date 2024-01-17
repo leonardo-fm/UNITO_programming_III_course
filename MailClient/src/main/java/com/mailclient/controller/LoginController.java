@@ -1,5 +1,8 @@
-package com.mailclient;
+package com.mailclient.controller;
 
+import com.mailclient.CommunicationHelper;
+import com.mailclient.SessionData;
+import com.mailclient.Utils;
 import com.sharedmodels.ResponseType;
 import com.sharedmodels.ServerResponse;
 import javafx.fxml.FXML;

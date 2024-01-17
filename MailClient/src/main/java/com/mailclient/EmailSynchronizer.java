@@ -1,5 +1,6 @@
 package com.mailclient;
 
+import com.mailclient.controller.InboxController;
 import com.sharedmodels.Email;
 import com.sharedmodels.ResponseType;
 import com.sharedmodels.ServerResponse;
@@ -55,7 +56,7 @@ public class EmailSynchronizer {
         CommunicationHelper communicationHelper = new CommunicationHelper();
         List<Email> newEmails;
         while (startSync) {
-            serverResponse = communicationHelper.GetNewEmails();
+            serverResponse = communicationHelper.getNewEmails();
             if (serverResponse.getResponseType() != ResponseType.OK) {
                 if (--maxIncreaseTime <= 0)
                     timeBetweenChecks *= (long) 1.5;

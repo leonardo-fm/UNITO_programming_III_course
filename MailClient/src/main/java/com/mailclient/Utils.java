@@ -25,10 +25,19 @@ public class Utils {
         return matcher.matches();
     }
 
-    public static void loadNewScene(String viewName) throws IOException {
+    /**
+     * It's mandatory to leave this class in this folder /com.mailclient, otherwise the resources folder can't be found
+     */
+    public static URL getResourceViewPath(String viewName) throws FileNotFoundException {
         URL loadedView = Utils.class.getResource(viewName);
         if (loadedView == null)
             throw new FileNotFoundException(viewName + " page not found!");
+
+        return loadedView;
+    }
+
+    public static void loadNewScene(String viewName) throws IOException {
+        URL loadedView = getResourceViewPath(viewName);
 
         Parent root = FXMLLoader.load(loadedView);
         Scene scene = new Scene(root);

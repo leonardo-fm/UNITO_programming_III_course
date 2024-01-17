@@ -5,4 +5,6 @@ module com.example.mailclient {
 
     opens com.mailclient to javafx.fxml;
     exports com.mailclient;
+    exports com.mailclient.controller;
+    opens com.mailclient.controller to javafx.fxml;
 }

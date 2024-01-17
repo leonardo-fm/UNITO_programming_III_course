@@ -16,7 +16,7 @@ public class CommunicationHelper {
 
     public CommunicationHelper() { }
 
-    public ServerResponse SendEmail(Email email) {
+    public ServerResponse sendEmail(Email email) {
         try {
             openCommunication();
             ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
@@ -50,7 +50,7 @@ public class CommunicationHelper {
         }
     }
 
-    public ServerResponse GetInboxEmails() {
+    public ServerResponse getInboxEmails() {
         try {
             openCommunication();
             ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
@@ -67,7 +67,7 @@ public class CommunicationHelper {
         }
     }
 
-    public ServerResponse GetNewEmails() {
+    public ServerResponse getNewEmails() {
         try {
             openCommunication();
             ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());
@@ -84,7 +84,7 @@ public class CommunicationHelper {
         }
     }
 
-    public ServerResponse DeleteEmail(UUID emailUUID) {
+    public ServerResponse deleteEmail(UUID emailUUID) {
         try {
             openCommunication();
             ObjectOutputStream outputStream = new ObjectOutputStream(socket.getOutputStream());

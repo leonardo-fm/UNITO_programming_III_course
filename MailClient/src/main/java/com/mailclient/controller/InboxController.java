@@ -1,5 +1,8 @@
-package com.mailclient;
+package com.mailclient.controller;
 
+import com.mailclient.CommunicationHelper;
+import com.mailclient.SessionData;
+import com.mailclient.Utils;
 import com.sharedmodels.Email;
 import com.sharedmodels.ResponseType;
 import com.sharedmodels.ServerResponse;
@@ -61,7 +64,7 @@ public class InboxController implements Initializable {
 
     private void loadAllEmails() {
         if (!SessionData.getInstance().isInboxLoaded()) {
-            ServerResponse serverResponse = new CommunicationHelper().GetInboxEmails();
+            ServerResponse serverResponse = new CommunicationHelper().getInboxEmails();
             if (serverResponse.getResponseType() != ResponseType.OK) {
                 errorLabel.setText(serverResponse.getResponseDescription());
                 return;
@@ -104,7 +107,7 @@ public class InboxController implements Initializable {
         button.setOnMouseClicked(event -> {
             try {
                 String readEmailView = "readEmail-view.fxml";
-                FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource(readEmailView));
+                FXMLLoader fxmlLoader = new FXMLLoader(Utils.getResourceViewPath(readEmailView));
                 Parent root = fxmlLoader.load();
 
                 ReadEmailController readEmailController = fxmlLoader.getController();

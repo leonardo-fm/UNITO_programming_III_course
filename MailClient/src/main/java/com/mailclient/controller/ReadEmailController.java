@@ -1,5 +1,8 @@
-package com.mailclient;
+package com.mailclient.controller;
 
+import com.mailclient.CommunicationHelper;
+import com.mailclient.SessionData;
+import com.mailclient.Utils;
 import com.sharedmodels.Email;
 import com.sharedmodels.ResponseType;
 import com.sharedmodels.ServerResponse;
@@ -11,7 +14,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -63,7 +65,7 @@ public class ReadEmailController implements Initializable {
         alert.showAndWait();
         if (alert.getResult() == ButtonType.NO) return;
 
-        ServerResponse serverResponse = new CommunicationHelper().DeleteEmail(currentOpenedEmail.getId());
+        ServerResponse serverResponse = new CommunicationHelper().deleteEmail(currentOpenedEmail.getId());
         if (serverResponse.getResponseType() != ResponseType.OK) {
             errorLabel.setText(serverResponse.getResponseDescription());
             return;
@@ -89,7 +91,7 @@ public class ReadEmailController implements Initializable {
             errorLabel.setText("");
 
             Email forwardedEmail = generateForwardEmail(forwardTo);
-            ServerResponse serverResponse = new CommunicationHelper().SendEmail(forwardedEmail);
+            ServerResponse serverResponse = new CommunicationHelper().sendEmail(forwardedEmail);
             if (serverResponse.getResponseType() != ResponseType.OK) {
                 errorLabel.setText("Error while forwarding the email request to the server");
                 return;
@@ -137,11 +139,7 @@ public class ReadEmailController implements Initializable {
     @FXML
     protected void onReplyBtnClick() throws IOException {
         String writeEmailView = "writeEmail-view.fxml";
-        URL loadedView = getClass().getResource(writeEmailView);
-        if (loadedView == null)
-            throw new FileNotFoundException("Write page not found!");
-
-        FXMLLoader fxmlLoader = new FXMLLoader(loadedView);
+        FXMLLoader fxmlLoader = new FXMLLoader(Utils.getResourceViewPath(writeEmailView));
         root = fxmlLoader.load();
 
         WriteEmailController writeEmailController = fxmlLoader.getController();
@@ -159,11 +157,7 @@ public class ReadEmailController implements Initializable {
     @FXML
     protected void onReplyAllBtnClick() throws IOException {
         String writeEmailView = "writeEmail-view.fxml";
-        URL loadedView = getClass().getResource(writeEmailView);
-        if (loadedView == null)
-            throw new FileNotFoundException("Write page not found!");
-
-        FXMLLoader fxmlLoader = new FXMLLoader(loadedView);
+        FXMLLoader fxmlLoader = new FXMLLoader(Utils.getResourceViewPath(writeEmailView));
         root = fxmlLoader.load();
 
         WriteEmailController writeEmailController = fxmlLoader.getController();

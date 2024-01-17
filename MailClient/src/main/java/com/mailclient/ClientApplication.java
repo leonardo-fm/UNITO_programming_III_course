@@ -6,9 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URL;
 
 public class ClientApplication extends Application {
 
@@ -17,13 +15,9 @@ public class ClientApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
 
-        URL landingPageUrl = getClass().getResource(landingPage);
-        if (landingPageUrl == null)
-            throw new FileNotFoundException("Landing page not found!");
-
         SessionData.getInstance().setCurrentStage(stage);
 
-        Parent root = FXMLLoader.load(landingPageUrl);
+        Parent root = FXMLLoader.load(Utils.getResourceViewPath(landingPage));
         Scene scene = new Scene(root);
         stage.setScene(scene);
         SessionData.getInstance().setCurrentView(landingPage);
@@ -34,13 +28,22 @@ public class ClientApplication extends Application {
 
     public static void main(String[] args) {
         try {
-            if (args.length > 0)
-                SessionData.getInstance().setPort(Integer.parseInt(args[0]));
+            if (args.length > 0) {
+                Integer portNumber = Integer.parseInt(args[0]);
+                SessionData.getInstance().setPort(portNumber);
+                Utils.Log("server port set to " + portNumber);
+            } else {
+                Utils.Log("server port " + SessionData.getInstance().getPort());
+            }
 
-            if (args.length > 1)
+            if (args.length > 1) {
                 SessionData.getInstance().setHost(args[1]);
+                Utils.Log("server address set to " + args[1]);
+            } else {
+                Utils.Log("server address " + SessionData.getInstance().getHost());
+            }
         } catch (NumberFormatException ex) {
-            System.out.println("Host port number not valid. Using default 8189");
+            Utils.Log("something wrong with the arguments, server address is: " + SessionData.getInstance().getHost() + ":" + SessionData.getInstance().getPort());
         }
 
         launch();

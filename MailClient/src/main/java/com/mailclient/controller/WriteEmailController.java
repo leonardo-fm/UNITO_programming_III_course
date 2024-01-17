@@ -1,5 +1,8 @@
-package com.mailclient;
+package com.mailclient.controller;
 
+import com.mailclient.CommunicationHelper;
+import com.mailclient.SessionData;
+import com.mailclient.Utils;
 import com.sharedmodels.Email;
 import com.sharedmodels.ResponseType;
 import com.sharedmodels.ServerResponse;
@@ -47,12 +50,11 @@ public class WriteEmailController implements Initializable {
 
     @FXML
     protected void onSendBtnClick() throws IOException {
-
         if (!isEmailDataCorrect()) return;
         errorLabel.setText("");
 
         Email emailToSend = generateEmailFromUserData();
-        ServerResponse serverResponse = new CommunicationHelper().SendEmail(generateEmailFromUserData());
+        ServerResponse serverResponse = new CommunicationHelper().sendEmail(generateEmailFromUserData());
         if (serverResponse.getResponseType() != ResponseType.OK) {
             errorLabel.setText(serverResponse.getResponseDescription());
             return;
