@@ -71,7 +71,7 @@ public class ReadEmailController implements Initializable {
             return;
         }
 
-        SessionData.getInstance().getInboxEmails().remove(currentOpenedEmail);
+        SessionData.getInstance().getInboxEmails().removeIf(c -> c.getId().compareTo(currentOpenedEmail.getId()) == 0);
         Utils.Log("successfully deleted and removed from session email " + currentOpenedEmail.getId().toString());
 
         Utils.loadNewScene("inbox-view.fxml");
