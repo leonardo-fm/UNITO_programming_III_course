@@ -1,10 +1,20 @@
 package com.mailserver;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class FileUtility {
+    private static final HashMap<String, ReentrantReadWriteLock> lockMap = new HashMap<>();
+
+    public static ReentrantReadWriteLock getFileLock (String filename) {
+        ReentrantReadWriteLock fileLock = lockMap.get(filename);
+        if (fileLock == null) {
+            fileLock = new ReentrantReadWriteLock();
+            lockMap.put(filename, fileLock);
+        }
+        return fileLock;
+    }
     public static void writeFileObject(String filename, Object data) throws IOException {
         FileOutputStream outStream = new FileOutputStream(filename);
         ObjectOutputStream oos = new ObjectOutputStream(outStream);

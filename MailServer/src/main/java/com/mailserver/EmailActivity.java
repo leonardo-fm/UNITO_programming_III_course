@@ -117,8 +117,10 @@ public class EmailActivity implements Runnable {
             return;
         }
 
+        String fileName = "mail_data_" + mailAddressId;
+        FileUtility.getFileLock(fileName).writeLock().lock();
         try {
-            List<Email> emails = (List<Email>) FileUtility.readFileObject("data/mail_data_" + mailAddressId);
+            List<Email> emails = (List<Email>) FileUtility.readFileObject("data/" + fileName);
             System.out.println("Id to remove: " + reqData.getId());
             System.out.println("Before: " + emails);
             boolean removed = emails.removeIf(searchEmail -> searchEmail.getId().compareTo(reqData.getId()) == 0);
@@ -128,12 +130,14 @@ public class EmailActivity implements Runnable {
                 res.setResponseDescription("Email to remove not found: " + reqData.getId());
                 return;
             }
-            FileUtility.writeFileObject("data/mail_data_" + mailAddressId, emails);
+            FileUtility.writeFileObject("data/" + fileName, emails);
             res.setResponseType(ResponseType.OK);
         } catch (IOException | ClassNotFoundException ex) {
             res.setResponseType(ResponseType.ERROR);
             res.setResponseDescription("Error on loading file");
             serverModel.addLog("Server error: " + ex);
+        } finally {
+            FileUtility.getFileLock(fileName).writeLock().unlock();
         }
     }
 
@@ -158,8 +162,10 @@ public class EmailActivity implements Runnable {
             return;
         }
 
+        String fileName = "mail_data_" + mailAddressId;
         try {
-            List<Email> emails = (List<Email>) FileUtility.readFileObject("data/mail_data_" + mailAddressId);
+            FileUtility.getFileLock(fileName).readLock().lock();
+            List<Email> emails = (List<Email>) FileUtility.readFileObject("data/" + fileName);
             res.setPayload(emails);
             res.setResponseType(ResponseType.OK);
         } catch (FileNotFoundException ex) {
@@ -169,6 +175,8 @@ public class EmailActivity implements Runnable {
             res.setResponseType(ResponseType.ERROR);
             res.setResponseDescription("Error on loading file");
             serverModel.addLog("Server error: " + ex);
+        } finally {
+            FileUtility.getFileLock(fileName).readLock().unlock();
         }
     }
 
@@ -194,8 +202,10 @@ public class EmailActivity implements Runnable {
         }
 
         List<Email> oldEmails;
+        String fileName = "mail_data_" + mailAddressId;
         try {
-            oldEmails = (List<Email>) FileUtility.readFileObject("data/mail_data_" + mailAddressId);
+            FileUtility.getFileLock(fileName).readLock().lock();
+            oldEmails = (List<Email>) FileUtility.readFileObject("data/" + fileName);
         } catch (FileNotFoundException ex) {
             oldEmails = new ArrayList<>();
         } catch (IOException | ClassNotFoundException ex) {
@@ -203,11 +213,15 @@ public class EmailActivity implements Runnable {
             res.setResponseDescription("Error on loading file");
             serverModel.addLog("Server error: " + ex);
             return;
+        } finally {
+            FileUtility.getFileLock(fileName).readLock().unlock();
         }
 
         List<Email> newEmails;
+        String fileNameNew = "mail_new_data_" + mailAddressId;
         try {
-            newEmails = (List<Email>) FileUtility.readFileObject("data/mail_new_data_" + mailAddressId);
+            FileUtility.getFileLock(fileNameNew).readLock().lock();
+            newEmails = (List<Email>) FileUtility.readFileObject("data/" + fileNameNew);
         } catch (FileNotFoundException ex) {
             newEmails = new ArrayList<>();
         } catch (IOException | ClassNotFoundException ex) {
@@ -215,12 +229,16 @@ public class EmailActivity implements Runnable {
             res.setResponseDescription("Error on loading file");
             serverModel.addLog("Server error: " + ex);
             return;
+        } finally {
+            FileUtility.getFileLock(fileNameNew).readLock().unlock();
         }
 
         oldEmails.addAll(newEmails);
         try {
-            FileUtility.writeFileObject("data/mail_data_" + mailAddressId, oldEmails);
-            FileUtility.writeFileObject("data/mail_new_data_" + mailAddressId, new ArrayList<Email>());
+            FileUtility.getFileLock(fileName).writeLock().lock();
+            FileUtility.getFileLock(fileNameNew).writeLock().lock();
+            FileUtility.writeFileObject("data/" + fileName, oldEmails);
+            FileUtility.writeFileObject("data/" + fileNameNew, new ArrayList<Email>());
 
             res.setPayload(newEmails);
             res.setResponseType(ResponseType.OK);
@@ -228,6 +246,9 @@ public class EmailActivity implements Runnable {
             res.setResponseType(ResponseType.ERROR);
             res.setResponseDescription("Error on loading file");
             serverModel.addLog("Server error: " + ex);
+        } finally {
+            FileUtility.getFileLock(fileName).writeLock().unlock();
+            FileUtility.getFileLock(fileNameNew).writeLock().unlock();
         }
     }
 
@@ -256,6 +277,7 @@ public class EmailActivity implements Runnable {
     private boolean saveEmailOnFile(String filename, Email email) {
         List<Email> emails;
         try {
+            FileUtility.getFileLock(filename).readLock().lock();
             emails = (List<Email>) FileUtility.readFileObject("data/" + filename);
         } catch (FileNotFoundException ex) {
             emails = new ArrayList<>();
@@ -263,14 +285,20 @@ public class EmailActivity implements Runnable {
             serverModel.addLog("Error on reading file: " + filename);
             serverModel.addLog(ex.toString());
             return false;
+        } finally {
+            FileUtility.getFileLock(filename).readLock().unlock();
         }
+
         emails.add(email);
         try {
+            FileUtility.getFileLock(filename).writeLock().lock();
             FileUtility.writeFileObject("data/" + filename, emails);
         } catch (IOException ex) {
             serverModel.addLog("Error on writing file: " + filename);
             serverModel.addLog(ex.toString());
             return false;
+        } finally {
+            FileUtility.getFileLock(filename).writeLock().unlock();
         }
         return true;
     }
