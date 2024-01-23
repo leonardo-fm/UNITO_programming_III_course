@@ -70,7 +70,7 @@ public class ServerApplication extends Application {
             try {
                 hostPort = Integer.parseInt(args[0]);
             } catch (NumberFormatException ex) {
-                System.out.println("Host port number not valid. Using default 8189");
+                System.out.println("Host port number not valid. Using default " + hostPort);
             }
         }
         launch();
